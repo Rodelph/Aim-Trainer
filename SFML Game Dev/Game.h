@@ -1,5 +1,10 @@
 #pragma once
 
+#include <vector>
+#include <iostream>
+#include <ctime>
+#include <sstream>
+
 #include <SFML/Window.hpp>
 #include <SFML/OpenGL.hpp>
 #include <SFML/Graphics.hpp>
@@ -7,9 +12,6 @@
 #include <SFML/Network.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Window.hpp>
-#include <vector>
-#include <iostream>
-#include <ctime>
 
 //Mini game engine class (Wrapper class)
 
@@ -28,11 +30,20 @@ class Game
 		sf::RectangleShape enemy;
 		std::vector<sf::RectangleShape> enemies;
 
+		//Res
+		sf::Font font;
+
+		//Text
+		sf::Text uiText;
+
 		//Game logic
-		int points;
+		unsigned points;
 		float enemySpawnTimer;
 		float enemySpawnTimerMax;
 		int maxEnemies;
+		bool mouseHeld;
+		int health;
+		bool endGame;
 
 		//Mouse Positions 
 		sf::Vector2i mousePosWindow;
@@ -42,6 +53,8 @@ class Game
 		void initializeVariables();
 		void initWindow();
 		void initEnemies();
+		void initFont();
+		void initText();
 
 	public :
 		//Constructors / Destructors
@@ -50,15 +63,20 @@ class Game
 	
 		//Accessors
 		const bool running() const;
+		const bool getEndGame() const;
 	
 		//Functions
+		void pollEvents();
+
 		void update();
 		void updateMousePos();
-		void render();
-		void pollEvents();
 		void spawnEnemy();
 		void updateEnemies();
-		void renderEnemies();
+		void updateText();
+
+		void render();
+		void renderEnemies(sf::RenderTarget& target);
+		void renderText(sf::RenderTarget& target);
 };
 
 #endif

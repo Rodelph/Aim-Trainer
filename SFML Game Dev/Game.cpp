@@ -5,9 +5,12 @@ void Game::initializeVariables()
 {
 	this->window = nullptr;
 	this->points = 0;
+	this->health = 50;
 	this->enemySpawnTimerMax = 10.f;
 	this->enemySpawnTimer = this->enemySpawnTimerMax;
 	this->maxEnemies = 10;
+	this->mouseHeld = false;
+	this->endGame = false;
 }
 
 void Game::initWindow()
@@ -15,7 +18,7 @@ void Game::initWindow()
 	this->videoMode.height = 600;
 	this->videoMode.width = 800;
 	this->window = new sf::RenderWindow(this->videoMode, "Hit me Up !", sf::Style::Titlebar | sf::Style::Close);
-	this->window->setFramerateLimit(60);
+	this->window->setFramerateLimit(75);
 }
 
 //Constructors and destructors
@@ -23,7 +26,9 @@ Game::Game()
 {
 	this->initializeVariables();
 	this->initWindow();
-	this->initEnemies();
+	this->initFont();
+	this->initText();
+	this->initEnemies();	
 }
 
 void Game::initEnemies()
@@ -35,19 +40,26 @@ void Game::initEnemies()
 	this->enemy.setScale(0.5f, 0.5f);
 }
 
+void Game::initFont()
+{
+	if (this->font.loadFromFile("src/Fonts/Dosis-Light.ttf"))
+	{
+		std::cout << "Info::GAME::InitFonts:: font loaded !" << std::endl;
+	}
+}
+
+void Game::initText()
+{
+	this->uiText.setFont(this->font);
+	this->uiText.setCharacterSize(24);
+	this->uiText.setFillColor(sf::Color::Black);
+	this->uiText.setPosition(0, 0);
+	this->uiText.setString("NONE");
+}
+
 Game::~Game()
 {
 	delete this->window;
-}
-
-void Game::updateMousePos()
-{
-	/*
-	Updates the mouse positions : 
-		Mouse position relateve to window (Vector2i)
-	*/
-	this->mousePosWindow = sf::Mouse::getPosition(*this->window);
-	this->mousePosView = this->window->mapPixelToCoords(this->mousePosWindow);
 }
 
 void Game::spawnEnemy()
@@ -72,18 +84,15 @@ void Game::spawnEnemy()
 	//Remove the enemies
 }
 
-void Game::renderEnemies()
-{
-	for (auto& e : this->enemies)
-	{
-		this->window->draw(e);
-	}
-}
-
 //Accessors
 const bool Game::running() const
 {
 	return this->window->isOpen();
+}
+
+const bool Game::getEndGame() const
+{
+	return this->endGame;
 }
 
 //Public functions
@@ -122,38 +131,90 @@ void Game::updateEnemies()
 	}
 
 	//Move the enemies
-
 	for (int i = 0; i < this->enemies.size(); i++)
 	{
-		this->enemies[i].move(0.f, 1.f);
 		bool deleted = false;
-
-		//Check if clicked on
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-		{
-			if (this->enemies[i].getGlobalBounds().contains(this->mousePosView))
-			{
-				deleted = true;
-				this->points += 1;
-				std::cout << this->points << std::endl;
-			}
-		}
-
+		this->enemies[i].move(0.f, 5.f);
 		if (this->enemies[i].getPosition().y > this->window->getSize().y)
 		{
-			deleted = true;
-		}
-
-		if(deleted)
 			this->enemies.erase(this->enemies.begin() + i);
+			this->health -= 1;
+			std::cout << "Your HP is : " << this->health << std::endl;
+		}
 	}
+	//Check if clicked on
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		if (this->mouseHeld == false)
+		{
+			this->mouseHeld = true;
+			bool deleted = false;
+			for (size_t i = 0; i < this->enemies.size() && deleted == false; i++)
+			{
+				if (this->enemies[i].getGlobalBounds().contains(this->mousePosView))
+				{
+					deleted = true;
+					this->enemies.erase(this->enemies.begin() + i);
+
+					//Gain points
+					this->points += 1;
+					std::cout <<"Your have a total of : " << this->points << " points !!" << std::endl;
+				}
+			}
+		}
+	}
+	else
+	{
+		this->mouseHeld = false;
+	}
+}
+
+void Game::updateMousePos()
+{
+	/*
+	Updates the mouse positions :
+		Mouse position relateve to window (Vector2i)
+	*/
+	this->mousePosWindow = sf::Mouse::getPosition(*this->window);
+	this->mousePosView = this->window->mapPixelToCoords(this->mousePosWindow);
+}
+
+void Game::updateText()
+{
+	std::stringstream ss;
+	ss << "Points : " << this->points << "\n"
+		<< "Health : " << this->health << "\n";
+	this->uiText.setString(ss.str());
+}
+
+void Game::renderText(sf::RenderTarget& target)
+{
+	target.draw(this->uiText);
 }
 
 void Game::update()
 {
 	this->pollEvents();
-	this->updateMousePos();
-	this->updateEnemies();
+	if(!this->endGame)
+	{
+		this->updateMousePos();
+		this->updateText();
+		this->updateEnemies();
+	}
+
+	if (this->health == 0)
+	{
+		std::cout << "You lost !!" << std::endl;
+		this->endGame = true;
+	}
+}
+
+void Game::renderEnemies(sf::RenderTarget& target)
+{
+	for (auto& e : this->enemies)
+	{
+		target.draw(e);
+	}
 }
 
 void Game::render()
@@ -164,6 +225,7 @@ void Game::render()
 		Displaying them
 	*/
 	this->window->clear(sf::Color(245, 245, 220, 255));
-	this->renderEnemies();
+	this->renderEnemies(*this->window);
+	this->renderText(*this->window);
 	this->window->display();
 }

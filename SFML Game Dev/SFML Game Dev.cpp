@@ -9,15 +9,13 @@ int main()
     Game game;
 
     //Game loop
-    while(game.running())
+    while(game.running() && !game.getEndGame())
     {
         //Update the game
         game.update();
 
         //Render the game
         game.render();
-
-        //Draw the game
     }
 
     return 0;
