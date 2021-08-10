@@ -104,7 +104,7 @@ void Game::initWindow()
 	this->videoMode.height = 600;
 	this->videoMode.width = 800;
 	this->window = new sf::RenderWindow(this->videoMode, "Hit me Up !", sf::Style::Titlebar | sf::Style::Close);
-	this->window->setFramerateLimit(60);
+	this->window->setVerticalSyncEnabled(true);
 }
 
 
