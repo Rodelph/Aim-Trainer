@@ -1,16 +1,102 @@
 #include "Game.h"
 
-//Private fctions
+//
+//
+//
+//
+//		Audio stuff
+//
+//
+//
+//
+
+void Game::initAudio()
+{
+	if (!this->bufferSfx.loadFromFile("src/Music/hit.wav"))
+		std::cout << "INFO::GAME::SFX:: SFX files not loaded !!" << std::endl;
+	else
+		this->soundHit.setBuffer(this->bufferSfx);
+
+	if (!this->musicBG.openFromFile("src/Music/music.wav"))
+		std::cout << "INFO::GAME::Music:: Music files not loaded !!" << std::endl;
+	else
+		this->playBGM();
+}
+
+void Game::playSFX()
+{
+	this->soundHit.play();
+}
+
+void Game::stopSFX()
+{
+	this->soundHit.stop();
+}
+
+void Game::pauseSFX()
+{
+	this->soundHit.pause();
+}
+
+void Game::setVolumeSFX(int vol)
+{
+	this->soundHit.setVolume(vol);
+}
+
+void Game::setPitchSFX(int pitch)
+{
+	this->soundHit.setPitch(pitch);
+}
+
+void Game::playBGM()
+{
+	this->musicBG.play();
+}
+
+void Game::pauseBGM()
+{
+	this->musicBG.pause();
+}
+
+void Game::stopBGM()
+{
+	this->musicBG.stop();
+}
+
+void Game::setVolumeBGM(int vol)
+{
+	this->musicBG.setVolume(vol);
+}
+
+void Game::setPitchBGM(int pitch)
+{
+	this->musicBG.setPitch(pitch);
+}
+
+//
+// 
+// 
+// 
+//		Game Stuff
+// 
+// 
+//
+
 void Game::initializeVariables()
 {
 	this->window = nullptr;
 	this->points = 0;
-	this->health = 50;
+	this->health = 500;
 	this->enemySpawnTimerMax = 10.f;
 	this->enemySpawnTimer = this->enemySpawnTimerMax;
-	this->maxEnemies = 10;
+	this->maxEnemies = 5;
 	this->mouseHeld = false;
 	this->endGame = false;
+	this->clock;
+	this->uiTextStats;
+	this->uiFpsStats;
+	this->time;
+	this->clock;
 }
 
 void Game::initWindow()
@@ -18,18 +104,9 @@ void Game::initWindow()
 	this->videoMode.height = 600;
 	this->videoMode.width = 800;
 	this->window = new sf::RenderWindow(this->videoMode, "Hit me Up !", sf::Style::Titlebar | sf::Style::Close);
-	this->window->setFramerateLimit(75);
+	this->window->setFramerateLimit(60);
 }
 
-//Constructors and destructors
-Game::Game()
-{
-	this->initializeVariables();
-	this->initWindow();
-	this->initFont();
-	this->initText();
-	this->initEnemies();	
-}
 
 void Game::initEnemies()
 {
@@ -42,19 +119,39 @@ void Game::initEnemies()
 
 void Game::initFont()
 {
-	if (this->font.loadFromFile("src/Fonts/Dosis-Light.ttf"))
-	{
-		std::cout << "Info::GAME::InitFonts:: font loaded !" << std::endl;
-	}
+	if (!this->font.loadFromFile("src/Fonts/Dosis-Light.ttf"))
+		std::cout << "Info::GAME::InitFonts:: Font not loaded !" << std::endl;
+	else
+		this->font.loadFromFile("src/Fonts/Dosis-Light.ttf");
 }
 
-void Game::initText()
+void Game::initTextStats()
 {
-	this->uiText.setFont(this->font);
-	this->uiText.setCharacterSize(24);
-	this->uiText.setFillColor(sf::Color::Black);
-	this->uiText.setPosition(0, 0);
-	this->uiText.setString("NONE");
+	this->uiTextStats.setFont(this->font);
+	this->uiTextStats.setCharacterSize(24);
+	this->uiTextStats.setFillColor(sf::Color::Black);
+	this->uiTextStats.setPosition(0, 0);
+	this->uiTextStats.setString("NONE");
+}
+
+void Game::initTextFps()
+{
+	this->uiFpsStats.setFont(this->font);
+	this->uiFpsStats.setCharacterSize(18);
+	this->uiFpsStats.setFillColor(sf::Color::Black);
+	this->uiFpsStats.setPosition(700, 0);
+	this->uiFpsStats.setString("NONE");
+}
+
+Game::Game()
+{
+	this->initializeVariables();
+	this->initWindow();
+	this->initFont();
+	this->initTextStats();
+	this->initTextFps();
+	this->initEnemies();
+	this->initAudio();
 }
 
 Game::~Game()
@@ -138,8 +235,8 @@ void Game::updateEnemies()
 		if (this->enemies[i].getPosition().y > this->window->getSize().y)
 		{
 			this->enemies.erase(this->enemies.begin() + i);
+			//Hp loss
 			this->health -= 1;
-			std::cout << "Your HP is : " << this->health << std::endl;
 		}
 	}
 	//Check if clicked on
@@ -156,9 +253,10 @@ void Game::updateEnemies()
 					deleted = true;
 					this->enemies.erase(this->enemies.begin() + i);
 
+					//Sfx
+					this->playSFX();
 					//Gain points
 					this->points += 1;
-					std::cout <<"Your have a total of : " << this->points << " points !!" << std::endl;
 				}
 			}
 		}
@@ -179,17 +277,21 @@ void Game::updateMousePos()
 	this->mousePosView = this->window->mapPixelToCoords(this->mousePosWindow);
 }
 
-void Game::updateText()
+void Game::updateTextStats()
 {
-	std::stringstream ss;
-	ss << "Points : " << this->points << "\n"
+	std::stringstream ssStats;
+	ssStats << "Points : " << this->points << "\n"
 		<< "Health : " << this->health << "\n";
-	this->uiText.setString(ss.str());
+	this->uiTextStats.setString(ssStats.str());
 }
 
-void Game::renderText(sf::RenderTarget& target)
+void Game::updateTextFps()
 {
-	target.draw(this->uiText);
+	std::stringstream ssFps;
+	this->time = this->clock.getElapsedTime();
+	ssFps << "FPS : " << (int)(1.0f / this->time.asSeconds()) << "\n";
+	this->uiFpsStats.setString(ssFps.str());
+	this->clock.restart().asSeconds();
 }
 
 void Game::update()
@@ -198,8 +300,9 @@ void Game::update()
 	if(!this->endGame)
 	{
 		this->updateMousePos();
-		this->updateText();
 		this->updateEnemies();
+		this->updateTextStats();
+		this->updateTextFps();
 	}
 
 	if (this->health == 0)
@@ -207,6 +310,16 @@ void Game::update()
 		std::cout << "You lost !!" << std::endl;
 		this->endGame = true;
 	}
+}
+
+void Game::renderTextStats(sf::RenderTarget& target)
+{
+	target.draw(this->uiTextStats);
+}
+
+void Game::renderTextFps(sf::RenderTarget& target)
+{
+	target.draw(this->uiFpsStats);
 }
 
 void Game::renderEnemies(sf::RenderTarget& target)
@@ -226,6 +339,7 @@ void Game::render()
 	*/
 	this->window->clear(sf::Color(245, 245, 220, 255));
 	this->renderEnemies(*this->window);
-	this->renderText(*this->window);
+	this->renderTextFps(*this->window);
+	this->renderTextStats(*this->window);
 	this->window->display();
 }
