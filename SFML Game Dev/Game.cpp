@@ -86,17 +86,12 @@ void Game::initializeVariables()
 {
 	this->window = nullptr;
 	this->points = 0;
-	this->health = 500;
-	this->enemySpawnTimerMax = 10.f;
+	this->health = 200;
+	this->enemySpawnTimerMax = 1.f;
 	this->enemySpawnTimer = this->enemySpawnTimerMax;
-	this->maxEnemies = 5;
+	this->maxEnemies = 3;
 	this->mouseHeld = false;
 	this->endGame = false;
-	this->clock;
-	this->uiTextStats;
-	this->uiFpsStats;
-	this->time;
-	this->clock;
 }
 
 void Game::initWindow()
@@ -108,13 +103,22 @@ void Game::initWindow()
 }
 
 
-void Game::initEnemies()
+void Game::initEnemiesRect()
 {
-	this->enemy.setPosition(100.f, 100.f);
-	this->enemy.setSize(sf::Vector2f(100.f, 100.f));
-	this->enemy.setOutlineColor(sf::Color::Green);
-	this->enemy.setOutlineThickness(1.f);
-	this->enemy.setScale(0.5f, 0.5f);
+	this->enemyRect.setPosition(100.f, 100.f);
+	this->enemyRect.setSize(sf::Vector2f(100.f, 100.f));
+	this->enemyRect.setOutlineColor(sf::Color::Green);
+	this->enemyRect.setOutlineThickness(1.f);
+	this->enemyRect.setScale(0.5f, 0.5f);
+}
+
+void Game::initEnemiesCirc()
+{
+	this->enemyCircle.setPosition(100.f, 100.f);
+	this->enemyCircle.setRadius(20.f);
+	this->enemyCircle.setOutlineColor(sf::Color::Black);
+	this->enemyCircle.setOutlineThickness(1.f);
+	this->enemyCircle.setScale(0.5f, 0.5f);
 }
 
 void Game::initFont()
@@ -139,7 +143,7 @@ void Game::initTextFps()
 	this->uiFpsStats.setFont(this->font);
 	this->uiFpsStats.setCharacterSize(18);
 	this->uiFpsStats.setFillColor(sf::Color::Black);
-	this->uiFpsStats.setPosition(700, 0);
+	this->uiFpsStats.setPosition(735, 0);
 	this->uiFpsStats.setString("NONE");
 }
 
@@ -150,7 +154,8 @@ Game::Game()
 	this->initFont();
 	this->initTextStats();
 	this->initTextFps();
-	this->initEnemies();
+	this->initEnemiesRect();
+	this->initEnemiesCirc();
 	this->initAudio();
 }
 
@@ -159,7 +164,7 @@ Game::~Game()
 	delete this->window;
 }
 
-void Game::spawnEnemy()
+void Game::spawnEnemyRect()
 {
 	//Spawns enemies and sets their color and positions 
 	//	   Sets a random position
@@ -168,59 +173,117 @@ void Game::spawnEnemy()
 	//	   Moves the enemies
 	//	   Removes the edge of the enemies from the screen
 
-	this->enemy.setPosition(
-		static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->enemy.getSize().x)),
+	this->enemyRect.setPosition(
+		static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->enemyRect.getSize().x)),
 		0.f
 	);
 	int type = rand() % 5;
 	switch (type)
 	{
 		case 0:
-			this->enemy.setFillColor(sf::Color::Green);
-			this->enemy.setSize(sf::Vector2f(100.f, 100.f));
-			this->enemy.setOutlineThickness(1.f);
-			this->enemy.setScale(0.5f, 0.5f);
+			this->enemyRect.setFillColor(sf::Color::Green);
+			this->enemyRect.setSize(sf::Vector2f(100.f, 100.f));
+			this->enemyRect.setOutlineThickness(1.f);
+			this->enemyRect.setScale(0.5f, 0.5f);
 			break;
 
 		case 1:
-			this->enemy.setFillColor(sf::Color::Red);
-			this->enemy.setSize(sf::Vector2f(50.f, 50.f));
-			this->enemy.setOutlineThickness(1.f);
-			this->enemy.setScale(0.5f, 0.5f);
+			this->enemyRect.setFillColor(sf::Color::Red);
+			this->enemyRect.setSize(sf::Vector2f(50.f, 50.f));
+			this->enemyRect.setOutlineThickness(1.f);
+			this->enemyRect.setScale(0.5f, 0.5f);
 			break;
 
 		case 2:
-			this->enemy.setFillColor(sf::Color::Cyan);
-			this->enemy.setSize(sf::Vector2f(30.f, 30.f));
-			this->enemy.setOutlineThickness(1.f);
-			this->enemy.setScale(0.5f, 0.5f);
+			this->enemyRect.setFillColor(sf::Color::Cyan);
+			this->enemyRect.setSize(sf::Vector2f(30.f, 30.f));
+			this->enemyRect.setOutlineThickness(1.f);
+			this->enemyRect.setScale(0.5f, 0.5f);
 			break;
 		case 3:
-			this->enemy.setFillColor(sf::Color::Blue);
-			this->enemy.setSize(sf::Vector2f(20.f, 20.f));
-			this->enemy.setOutlineThickness(1.f);
-			this->enemy.setScale(0.5f, 0.5f);
+			this->enemyRect.setFillColor(sf::Color::Blue);
+			this->enemyRect.setSize(sf::Vector2f(20.f, 20.f));
+			this->enemyRect.setOutlineThickness(1.f);
+			this->enemyRect.setScale(0.5f, 0.5f);
 			break;
 
 		case 4:
-			this->enemy.setFillColor(sf::Color::Magenta);
-			this->enemy.setSize(sf::Vector2f(15.f, 15.f));
-			this->enemy.setOutlineThickness(1.f);
-			this->enemy.setScale(0.5f, 0.5f);
+			this->enemyRect.setFillColor(sf::Color::Magenta);
+			this->enemyRect.setSize(sf::Vector2f(15.f, 15.f));
+			this->enemyRect.setOutlineThickness(1.f);
+			this->enemyRect.setScale(0.5f, 0.5f);
 			break;
 
 		case 5:
-			this->enemy.setFillColor(sf::Color::White);
-			this->enemy.setSize(sf::Vector2f(10.f, 10.f));
-			this->enemy.setOutlineThickness(1.f);
-			this->enemy.setScale(0.5f, 0.5f);
+			this->enemyRect.setFillColor(sf::Color::White);
+			this->enemyRect.setSize(sf::Vector2f(10.f, 10.f));
+			this->enemyRect.setOutlineThickness(1.f);
+			this->enemyRect.setScale(0.5f, 0.5f);
 			break;
 	}
 
 	//Spaw, the enemies
-	this->enemies.push_back(this->enemy);
+	this->enemiesRect.push_back(this->enemyRect);
 
 	//Remove the enemies
+}
+
+void Game::spawnEnemyCircle()
+{
+	//Spawns enemies and sets their color and positions 
+//	   Sets a random position
+// 	   Sets a random color
+// 	   Adds enemy to the vector
+//	   Moves the enemies
+//	   Removes the edge of the enemies from the screen
+
+	this->enemyCircle.setPosition(
+		static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->enemyCircle.getRadius())),
+	);
+	int type = rand() % 5;
+	switch (type)
+	{
+	case 0:
+		this->enemyCircle.setFillColor(sf::Color::Green);
+		this->enemyCircle.setRadius(10.f);
+		this->enemyCircle.setOutlineThickness(1.f);
+		this->enemyCircle.setScale(0.5f, 0.5f);
+		break;
+
+	case 1:
+		this->enemyRect.setFillColor(sf::Color::Red);
+		this->enemyRect.setSize(sf::Vector2f(50.f, 50.f));
+		this->enemyRect.setOutlineThickness(1.f);
+		this->enemyRect.setScale(0.5f, 0.5f);
+		break;
+
+	case 2:
+		this->enemyRect.setFillColor(sf::Color::Cyan);
+		this->enemyRect.setSize(sf::Vector2f(30.f, 30.f));
+		this->enemyRect.setOutlineThickness(1.f);
+		this->enemyRect.setScale(0.5f, 0.5f);
+		break;
+	case 3:
+		this->enemyRect.setFillColor(sf::Color::Blue);
+		this->enemyRect.setSize(sf::Vector2f(20.f, 20.f));
+		this->enemyRect.setOutlineThickness(1.f);
+		this->enemyRect.setScale(0.5f, 0.5f);
+		break;
+
+	case 4:
+		this->enemyRect.setFillColor(sf::Color::Magenta);
+		this->enemyRect.setSize(sf::Vector2f(15.f, 15.f));
+		this->enemyRect.setOutlineThickness(1.f);
+		this->enemyRect.setScale(0.5f, 0.5f);
+		break;
+
+	case 5:
+		this->enemyRect.setFillColor(sf::Color::White);
+		this->enemyRect.setSize(sf::Vector2f(10.f, 10.f));
+		this->enemyRect.setOutlineThickness(1.f);
+		this->enemyRect.setScale(0.5f, 0.5f);
+		break;
+	}
 }
 
 //Accessors
@@ -254,15 +317,15 @@ void Game::pollEvents()
 	}
 }
 
-void Game::updateEnemies()
+void Game::updateEnemiesRect()
 {
 	//Update the timer for enemy spawning
-	if (this->enemies.size() < this->maxEnemies)
+	if (this->enemiesRect.size() < this->maxEnemies)
 	{
 		if (this->enemySpawnTimer >= this->enemySpawnTimerMax)
 		{
 			//Spawn the enemy and reset the timer
-			this->spawnEnemy();
+			this->spawnEnemyRect();
 			this->enemySpawnTimer = 0.f;
 		}
 		else
@@ -270,13 +333,13 @@ void Game::updateEnemies()
 	}
 
 	//Move the enemies
-	for (int i = 0; i < this->enemies.size(); i++)
+	for (int i = 0; i < this->enemiesRect.size(); i++)
 	{
 		bool deleted = false;
-		this->enemies[i].move(0.f, 5.f);
-		if (this->enemies[i].getPosition().y > this->window->getSize().y)
+		this->enemiesRect[i].move(0.f, 5.f);
+		if (this->enemiesRect[i].getPosition().y > this->window->getSize().y)
 		{
-			this->enemies.erase(this->enemies.begin() + i);
+			this->enemiesRect.erase(this->enemiesRect.begin() + i);
 			//Hp loss
 			this->health -= 1;
 		}
@@ -288,27 +351,27 @@ void Game::updateEnemies()
 		{
 			this->mouseHeld = true;
 			bool deleted = false;
-			for (size_t i = 0; i < this->enemies.size() && deleted == false; i++)
+			for (size_t i = 0; i < this->enemiesRect.size() && deleted == false; i++)
 			{
-				if (this->enemies[i].getGlobalBounds().contains(this->mousePosView))
+				if (this->enemiesRect[i].getGlobalBounds().contains(this->mousePosView))
 				{
 					//Deleting enemies and point system
-					if (this->enemies[i].getFillColor() == sf::Color::Green)
+					if (this->enemiesRect[i].getFillColor() == sf::Color::Green)
 						this->points += 10;
-					else if (this->enemies[i].getFillColor() == sf::Color::Red)
+					else if (this->enemiesRect[i].getFillColor() == sf::Color::Red)
 						this->points += 20;
-					else if (this->enemies[i].getFillColor() == sf::Color::Blue)
+					else if (this->enemiesRect[i].getFillColor() == sf::Color::Blue)
 						this->points += 50;
-					else if (this->enemies[i].getFillColor() == sf::Color::Cyan)
+					else if (this->enemiesRect[i].getFillColor() == sf::Color::Cyan)
 						this->points += 100;
-					else if (this->enemies[i].getFillColor() == sf::Color::Magenta)
+					else if (this->enemiesRect[i].getFillColor() == sf::Color::Magenta)
 						this->points += 200;
-					else if (this->enemies[i].getFillColor() == sf::Color::White)
+					else if (this->enemiesRect[i].getFillColor() == sf::Color::White)
 						this->points += 500;
 
 					deleted = true;
 
-					this->enemies.erase(this->enemies.begin() + i);
+					this->enemiesRect.erase(this->enemiesRect.begin() + i);
 
 					//Sfx when u hit a target
 					this->playSFX();
@@ -320,6 +383,11 @@ void Game::updateEnemies()
 	{
 		this->mouseHeld = false;
 	}
+}
+
+void Game::updateEnemiesCirc()
+{
+
 }
 
 void Game::updateMousePos()
@@ -355,7 +423,7 @@ void Game::update()
 	if(!this->endGame)
 	{
 		this->updateMousePos();
-		this->updateEnemies();
+		this->updateEnemiesRect();
 		this->updateTextStats();
 		this->updateTextFps();
 	}
@@ -377,9 +445,9 @@ void Game::renderTextFps(sf::RenderTarget& target)
 	target.draw(this->uiFpsStats);
 }
 
-void Game::renderEnemies(sf::RenderTarget& target)
+void Game::renderEnemiesRect(sf::RenderTarget& target)
 {
-	for (auto& e : this->enemies)
+	for (auto& e : this->enemiesRect)
 	{
 		target.draw(e);
 	}
@@ -393,7 +461,7 @@ void Game::render()
 		Displaying them
 	*/
 	this->window->clear(sf::Color(245, 245, 220, 255));
-	this->renderEnemies(*this->window);
+	this->renderEnemiesRect(*this->window);
 	this->renderTextFps(*this->window);
 	this->renderTextStats(*this->window);
 	this->window->display();

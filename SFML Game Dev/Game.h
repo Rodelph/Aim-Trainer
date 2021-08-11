@@ -17,6 +17,19 @@
 
 class Game
 {
+	/*
+	*
+	*
+	*
+	*
+	*
+				 part
+	*
+	*
+	*
+	*
+	*
+	*/
 	private :
 		//Variables for the window and events
 		sf::RenderWindow* window;
@@ -24,8 +37,11 @@ class Game
 		sf::VideoMode videoMode;
 
 		//Game objects
-		sf::RectangleShape enemy;
-		std::vector<sf::RectangleShape> enemies;
+		sf::RectangleShape enemyRect;
+		sf::CircleShape enemyCircle;
+
+		std::vector<sf::RectangleShape> enemiesRect;
+		std::vector<sf::CircleShape> enemiesCirc;
 
 		//Fonts
 		sf::Font font;
@@ -54,7 +70,8 @@ class Game
 		//Functions to initialize the window
 		void initializeVariables();
 		void initWindow();
-		void initEnemies();
+		void initEnemiesRect();
+		void initEnemiesCirc();
 		void initFont();
 		void initTextStats();
 		void initTextFps();
@@ -73,13 +90,16 @@ class Game
 
 		void update();
 		void updateMousePos();
-		void spawnEnemy();
-		void updateEnemies();
+		void spawnEnemyRect();
+		void spawnEnemyCircle();
+		void updateEnemiesRect();
+		void updateEnemiesCirc();
 		void updateTextStats();
 		void updateTextFps();
 
 		void render();
-		void renderEnemies(sf::RenderTarget& target);
+		void renderEnemiesRect(sf::RenderTarget& target);
+		void renderEnemeiesCirc(sf::RenderTarget& target);
 		void renderTextStats(sf::RenderTarget& target);
 		void renderTextFps(sf::RenderTarget& target);
 
@@ -97,29 +117,29 @@ class Game
 		*
 		*/
 
-		private:
-			//SFX Variables
-			sf::SoundBuffer bufferSfx;
-			sf::Sound soundHit;
+	private:
+		//SFX Variables
+		sf::SoundBuffer bufferSfx;
+		sf::Sound soundHit;
 
-			//BGM Variables
-			sf::Music musicBG;
+		//BGM Variables
+		sf::Music musicBG;
 
-		public:
-			//SFX Functions
-			void initAudio();
-			void playSFX();
-			void stopSFX();
-			void pauseSFX();
-			void setVolumeSFX(int vol);
-			void setPitchSFX(int pitch);
+	public:
+		//SFX Functions
+		void initAudio();
+		void playSFX();
+		void stopSFX();
+		void pauseSFX();
+		void setVolumeSFX(int vol);
+		void setPitchSFX(int pitch);
 
-			//BGM Functions
-			void playBGM();
-			void pauseBGM();
-			void stopBGM();
-			void setVolumeBGM(int vol);
-			void setPitchBGM(int pitch);
+		//BGM Functions
+		void playBGM();
+		void pauseBGM();
+		void stopBGM();
+		void setVolumeBGM(int vol);
+		void setPitchBGM(int pitch);
 };
 
 #endif
