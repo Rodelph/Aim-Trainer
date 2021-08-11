@@ -172,8 +172,50 @@ void Game::spawnEnemy()
 		static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->enemy.getSize().x)),
 		0.f
 	);
+	int type = rand() % 5;
+	switch (type)
+	{
+		case 0:
+			this->enemy.setFillColor(sf::Color::Green);
+			this->enemy.setSize(sf::Vector2f(100.f, 100.f));
+			this->enemy.setOutlineThickness(1.f);
+			this->enemy.setScale(0.5f, 0.5f);
+			break;
 
-	this->enemy.setFillColor(sf::Color::Green);
+		case 1:
+			this->enemy.setFillColor(sf::Color::Red);
+			this->enemy.setSize(sf::Vector2f(50.f, 50.f));
+			this->enemy.setOutlineThickness(1.f);
+			this->enemy.setScale(0.5f, 0.5f);
+			break;
+
+		case 2:
+			this->enemy.setFillColor(sf::Color::Cyan);
+			this->enemy.setSize(sf::Vector2f(30.f, 30.f));
+			this->enemy.setOutlineThickness(1.f);
+			this->enemy.setScale(0.5f, 0.5f);
+			break;
+		case 3:
+			this->enemy.setFillColor(sf::Color::Blue);
+			this->enemy.setSize(sf::Vector2f(20.f, 20.f));
+			this->enemy.setOutlineThickness(1.f);
+			this->enemy.setScale(0.5f, 0.5f);
+			break;
+
+		case 4:
+			this->enemy.setFillColor(sf::Color::Magenta);
+			this->enemy.setSize(sf::Vector2f(15.f, 15.f));
+			this->enemy.setOutlineThickness(1.f);
+			this->enemy.setScale(0.5f, 0.5f);
+			break;
+
+		case 5:
+			this->enemy.setFillColor(sf::Color::White);
+			this->enemy.setSize(sf::Vector2f(10.f, 10.f));
+			this->enemy.setOutlineThickness(1.f);
+			this->enemy.setScale(0.5f, 0.5f);
+			break;
+	}
 
 	//Spaw, the enemies
 	this->enemies.push_back(this->enemy);
@@ -250,13 +292,26 @@ void Game::updateEnemies()
 			{
 				if (this->enemies[i].getGlobalBounds().contains(this->mousePosView))
 				{
+					//Deleting enemies and point system
+					if (this->enemies[i].getFillColor() == sf::Color::Green)
+						this->points += 10;
+					else if (this->enemies[i].getFillColor() == sf::Color::Red)
+						this->points += 20;
+					else if (this->enemies[i].getFillColor() == sf::Color::Blue)
+						this->points += 50;
+					else if (this->enemies[i].getFillColor() == sf::Color::Cyan)
+						this->points += 100;
+					else if (this->enemies[i].getFillColor() == sf::Color::Magenta)
+						this->points += 200;
+					else if (this->enemies[i].getFillColor() == sf::Color::White)
+						this->points += 500;
+
 					deleted = true;
+
 					this->enemies.erase(this->enemies.begin() + i);
 
-					//Sfx
+					//Sfx when u hit a target
 					this->playSFX();
-					//Gain points
-					this->points += 1;
 				}
 			}
 		}
