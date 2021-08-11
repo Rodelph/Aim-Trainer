@@ -224,8 +224,6 @@ void Game::spawnEnemyRect()
 
 	//Spaw, the enemies
 	this->enemiesRect.push_back(this->enemyRect);
-
-	//Remove the enemies
 }
 
 void Game::spawnEnemyCircle()
@@ -239,51 +237,55 @@ void Game::spawnEnemyCircle()
 
 	this->enemyCircle.setPosition(
 		static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->enemyCircle.getRadius())),
+		0.f
 	);
 	int type = rand() % 5;
 	switch (type)
 	{
-	case 0:
-		this->enemyCircle.setFillColor(sf::Color::Green);
-		this->enemyCircle.setRadius(10.f);
-		this->enemyCircle.setOutlineThickness(1.f);
-		this->enemyCircle.setScale(0.5f, 0.5f);
-		break;
+		case 0:
+			this->enemyCircle.setFillColor(sf::Color::Green);
+			this->enemyCircle.setRadius(10.f);
+			this->enemyCircle.setOutlineThickness(1.f);
+			this->enemyCircle.setScale(0.5f, 0.5f);
+			break;
 
-	case 1:
-		this->enemyRect.setFillColor(sf::Color::Red);
-		this->enemyRect.setSize(sf::Vector2f(50.f, 50.f));
-		this->enemyRect.setOutlineThickness(1.f);
-		this->enemyRect.setScale(0.5f, 0.5f);
-		break;
+		case 1:
+			this->enemyCircle.setFillColor(sf::Color::Red);
+			this->enemyCircle.setRadius(20.f);
+			this->enemyCircle.setOutlineThickness(1.f);
+			this->enemyCircle.setScale(0.5f, 0.5f);
+			break;
 
-	case 2:
-		this->enemyRect.setFillColor(sf::Color::Cyan);
-		this->enemyRect.setSize(sf::Vector2f(30.f, 30.f));
-		this->enemyRect.setOutlineThickness(1.f);
-		this->enemyRect.setScale(0.5f, 0.5f);
-		break;
-	case 3:
-		this->enemyRect.setFillColor(sf::Color::Blue);
-		this->enemyRect.setSize(sf::Vector2f(20.f, 20.f));
-		this->enemyRect.setOutlineThickness(1.f);
-		this->enemyRect.setScale(0.5f, 0.5f);
-		break;
+		case 2:
+			this->enemyCircle.setFillColor(sf::Color::Cyan);
+			this->enemyCircle.setRadius(20.f);
+			this->enemyCircle.setOutlineThickness(1.f);
+			this->enemyCircle.setScale(0.5f, 0.5f); 
+			break;
+	
+		case 3:
+			this->enemyCircle.setFillColor(sf::Color::Blue);
+			this->enemyCircle.setRadius(20.f);
+			this->enemyCircle.setOutlineThickness(1.f);
+			this->enemyCircle.setScale(0.5f, 0.5f);
+			break;
 
-	case 4:
-		this->enemyRect.setFillColor(sf::Color::Magenta);
-		this->enemyRect.setSize(sf::Vector2f(15.f, 15.f));
-		this->enemyRect.setOutlineThickness(1.f);
-		this->enemyRect.setScale(0.5f, 0.5f);
-		break;
+		case 4:
+			this->enemyCircle.setFillColor(sf::Color::Magenta);
+			this->enemyCircle.setRadius(40.f);
+			this->enemyCircle.setOutlineThickness(1.f);
+			this->enemyCircle.setScale(0.5f, 0.5f);
+			break;
 
-	case 5:
-		this->enemyRect.setFillColor(sf::Color::White);
-		this->enemyRect.setSize(sf::Vector2f(10.f, 10.f));
-		this->enemyRect.setOutlineThickness(1.f);
-		this->enemyRect.setScale(0.5f, 0.5f);
-		break;
+		case 5:
+			this->enemyCircle.setFillColor(sf::Color::White);
+			this->enemyCircle.setRadius(50.f);
+			this->enemyCircle.setOutlineThickness(1.f);
+			this->enemyCircle.setScale(0.5f, 0.5f);
+			break;
 	}
+	//Spaw, the enemies
+	this->enemiesCirc.push_back(this->enemyCircle);
 }
 
 //Accessors
@@ -387,7 +389,70 @@ void Game::updateEnemiesRect()
 
 void Game::updateEnemiesCirc()
 {
+	//Update the timer for enemy spawning
+	if (this->enemiesCirc.size() < this->maxEnemies)
+	{
+		if (this->enemySpawnTimer >= this->enemySpawnTimerMax)
+		{
+			//Spawn the enemy and reset the timer
+			this->spawnEnemyCircle();
+			this->enemySpawnTimer = 10.f;
+		}
+		else
+			this->enemySpawnTimer += 1.f;
+	}
 
+	//Move the enemies
+	for (int i = 0; i < this->enemiesCirc.size(); i++)
+	{
+		bool deleted = false;
+		this->enemiesCirc[i].move(0.f, 5.f);
+		if (this->enemiesCirc[i].getPosition().y > this->window->getSize().y)
+		{
+			this->enemiesCirc.erase(this->enemiesCirc.begin() + i);
+			//Hp loss
+			this->health -= 1;
+		}
+	}
+	//Check if clicked on
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		if (this->mouseHeld == false)
+		{
+			this->mouseHeld = true;
+			bool deleted = false;
+			for (size_t i = 0; i < this->enemiesCirc.size() && deleted == false; i++)
+			{
+				if (this->enemiesCirc[i].getGlobalBounds().contains(this->mousePosView))
+				{
+					//Deleting enemies and point system
+					if (this->enemiesCirc[i].getFillColor() == sf::Color::Green)
+						this->points += 10;
+					else if (this->enemiesCirc[i].getFillColor() == sf::Color::Red)
+						this->points += 20;
+					else if (this->enemiesCirc[i].getFillColor() == sf::Color::Blue)
+						this->points += 50;
+					else if (this->enemiesCirc[i].getFillColor() == sf::Color::Cyan)
+						this->points += 100;
+					else if (this->enemiesCirc[i].getFillColor() == sf::Color::Magenta)
+						this->points += 200;
+					else if (this->enemiesCirc[i].getFillColor() == sf::Color::White)
+						this->points += 500;
+
+					deleted = true;
+
+					this->enemiesCirc.erase(this->enemiesCirc.begin() + i);
+
+					//Sfx when u hit a target
+					this->playSFX();
+				}
+			}
+		}
+	}
+	else
+	{
+		this->mouseHeld = false;
+	}
 }
 
 void Game::updateMousePos()
@@ -424,6 +489,7 @@ void Game::update()
 	{
 		this->updateMousePos();
 		this->updateEnemiesRect();
+		this->updateEnemiesCirc();
 		this->updateTextStats();
 		this->updateTextFps();
 	}
@@ -453,6 +519,14 @@ void Game::renderEnemiesRect(sf::RenderTarget& target)
 	}
 }
 
+void Game::renderEnemeiesCirc(sf::RenderTarget& target)
+{
+	for (auto& e : this->enemiesCirc)
+	{
+		target.draw(e);
+	}
+}
+
 void Game::render()
 {
 	/*Renders the game object by : 
@@ -462,6 +536,7 @@ void Game::render()
 	*/
 	this->window->clear(sf::Color(245, 245, 220, 255));
 	this->renderEnemiesRect(*this->window);
+	this->renderEnemeiesCirc(*this->window);
 	this->renderTextFps(*this->window);
 	this->renderTextStats(*this->window);
 	this->window->display();
