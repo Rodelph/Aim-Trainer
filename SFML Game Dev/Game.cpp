@@ -87,9 +87,15 @@ void Game::initializeVariables()
 	this->window = nullptr;
 	this->points = 0;
 	this->health = 200;
-	this->enemySpawnTimerMax = 1.f;
-	this->enemySpawnTimer = this->enemySpawnTimerMax;
-	this->maxEnemies = 3;
+
+	this->enemySpawnTimerMaxRect = 1.f;
+	this->enemySpawnTimerRect = this->enemySpawnTimerMaxRect;
+	this->maxEnemiesRect = 3;
+
+	this->enemySpawnTimerMaxCirc = 1.f;
+	this->enemySpawnTimerCirc = this->enemySpawnTimerMaxCirc;
+	this->maxEnemiesCirc = 3;
+
 	this->mouseHeld = false;
 	this->endGame = false;
 }
@@ -147,12 +153,25 @@ void Game::initTextFps()
 	this->uiFpsStats.setString("NONE");
 }
 
+void Game::initHpBar()
+{
+	this->hpBar.setFillColor(sf::Color::Red);
+	this->hpBar.setPosition(0, 10);
+	this->hpBar.setSize(sf::Vector2f(300.f, 80.f));
+	
+	this->hpBorder.setPosition(0, 10);
+	this->hpBorder.setSize(sf::Vector2f(300.f, 80.f));
+	this->hpBorder.setOutlineColor(sf::Color::Black);
+	this->hpBorder.setOutlineThickness(1.f);
+}
+
 Game::Game()
 {
 	this->initializeVariables();
 	this->initWindow();
 	this->initFont();
 	this->initTextStats();
+	this->initHpBar();
 	this->initTextFps();
 	this->initEnemiesRect();
 	this->initEnemiesCirc();
@@ -287,6 +306,13 @@ void Game::spawnEnemyCircle()
 	//Spaw, the enemies
 	this->enemiesCirc.push_back(this->enemyCircle);
 }
+//Fix hp bar
+void Game::updateHpBar()
+{
+	float healthVal = this->health;
+
+	this->hpBar.setSize(sf::Vector2f(this->health, 80));
+}
 
 //Accessors
 const bool Game::running() const
@@ -319,19 +345,19 @@ void Game::pollEvents()
 	}
 }
 
-void Game::updateEnemiesRect()
+void Game::updateEnemies()
 {
 	//Update the timer for enemy spawning
-	if (this->enemiesRect.size() < this->maxEnemies)
+	if (this->enemiesRect.size() < this->maxEnemiesRect)
 	{
-		if (this->enemySpawnTimer >= this->enemySpawnTimerMax)
+		if (this->enemySpawnTimerRect >= this->enemySpawnTimerMaxRect)
 		{
 			//Spawn the enemy and reset the timer
 			this->spawnEnemyRect();
-			this->enemySpawnTimer = 0.f;
+			this->enemySpawnTimerRect = 0.f;
 		}
 		else
-			this->enemySpawnTimer += 1.f;
+			this->enemySpawnTimerRect += 1.f;
 	}
 
 	//Move the enemies
@@ -346,60 +372,17 @@ void Game::updateEnemiesRect()
 			this->health -= 1;
 		}
 	}
-	//Check if clicked on
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+
+	if (this->enemiesCirc.size() < this->maxEnemiesCirc)
 	{
-		if (this->mouseHeld == false)
-		{
-			this->mouseHeld = true;
-			bool deleted = false;
-			for (size_t i = 0; i < this->enemiesRect.size() && deleted == false; i++)
-			{
-				if (this->enemiesRect[i].getGlobalBounds().contains(this->mousePosView))
-				{
-					//Deleting enemies and point system
-					if (this->enemiesRect[i].getFillColor() == sf::Color::Green)
-						this->points += 10;
-					else if (this->enemiesRect[i].getFillColor() == sf::Color::Red)
-						this->points += 20;
-					else if (this->enemiesRect[i].getFillColor() == sf::Color::Blue)
-						this->points += 50;
-					else if (this->enemiesRect[i].getFillColor() == sf::Color::Cyan)
-						this->points += 100;
-					else if (this->enemiesRect[i].getFillColor() == sf::Color::Magenta)
-						this->points += 200;
-					else if (this->enemiesRect[i].getFillColor() == sf::Color::White)
-						this->points += 500;
-
-					deleted = true;
-
-					this->enemiesRect.erase(this->enemiesRect.begin() + i);
-
-					//Sfx when u hit a target
-					this->playSFX();
-				}
-			}
-		}
-	}
-	else
-	{
-		this->mouseHeld = false;
-	}
-}
-
-void Game::updateEnemiesCirc()
-{
-	//Update the timer for enemy spawning
-	if (this->enemiesCirc.size() < this->maxEnemies)
-	{
-		if (this->enemySpawnTimer >= this->enemySpawnTimerMax)
+		if (this->enemySpawnTimerCirc >= this->enemySpawnTimerMaxCirc)
 		{
 			//Spawn the enemy and reset the timer
 			this->spawnEnemyCircle();
-			this->enemySpawnTimer = 10.f;
+			this->enemySpawnTimerCirc = 10.f;
 		}
 		else
-			this->enemySpawnTimer += 1.f;
+			this->enemySpawnTimerCirc += 1.f;
 	}
 
 	//Move the enemies
@@ -414,6 +397,7 @@ void Game::updateEnemiesCirc()
 			this->health -= 1;
 		}
 	}
+
 	//Check if clicked on
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
@@ -421,6 +405,33 @@ void Game::updateEnemiesCirc()
 		{
 			this->mouseHeld = true;
 			bool deleted = false;
+			for (size_t i = 0; i < this->enemiesRect.size() && deleted == false; i++)
+			{
+				if (this->enemiesRect[i].getGlobalBounds().contains(this->mousePosView))
+				{
+					//Deleting enemies and point system
+					if (this->enemiesRect[i].getFillColor() == sf::Color::Green)
+						this->points += 500;
+					else if (this->enemiesRect[i].getFillColor() == sf::Color::Red)
+						this->points += 200;
+					else if (this->enemiesRect[i].getFillColor() == sf::Color::Blue)
+						this->points += 50;
+					else if (this->enemiesRect[i].getFillColor() == sf::Color::Cyan)
+						this->points += 100;
+					else if (this->enemiesRect[i].getFillColor() == sf::Color::Magenta)
+						this->points += 20;
+					else if (this->enemiesRect[i].getFillColor() == sf::Color::White)
+						this->points += 10;
+
+					deleted = true;
+
+					this->enemiesRect.erase(this->enemiesRect.begin() + i);
+
+					//Sfx when u hit a target
+					this->playSFX();
+				}
+			}
+
 			for (size_t i = 0; i < this->enemiesCirc.size() && deleted == false; i++)
 			{
 				if (this->enemiesCirc[i].getGlobalBounds().contains(this->mousePosView))
@@ -488,10 +499,10 @@ void Game::update()
 	if(!this->endGame)
 	{
 		this->updateMousePos();
-		this->updateEnemiesRect();
-		this->updateEnemiesCirc();
+		this->updateEnemies();
 		this->updateTextStats();
 		this->updateTextFps();
+		this->updateHpBar();
 	}
 
 	if (this->health == 0)
@@ -526,6 +537,13 @@ void Game::renderEnemeiesCirc(sf::RenderTarget& target)
 		target.draw(e);
 	}
 }
+
+void Game::rednderHpBar(sf::RenderTarget& target)
+{
+	//target.draw(this->hpBorder);
+	target.draw(this->hpBar);
+}
+
 
 void Game::render()
 {

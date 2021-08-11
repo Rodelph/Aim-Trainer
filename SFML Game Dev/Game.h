@@ -39,6 +39,7 @@ class Game
 		//Game objects
 		sf::RectangleShape enemyRect;
 		sf::CircleShape enemyCircle;
+		sf::RectangleShape hpBar, hpBorder;
 
 		std::vector<sf::RectangleShape> enemiesRect;
 		std::vector<sf::CircleShape> enemiesCirc;
@@ -52,9 +53,9 @@ class Game
 
 		//Game logic
 		unsigned points;
-		float enemySpawnTimer;
-		float enemySpawnTimerMax;
-		int maxEnemies;
+		float enemySpawnTimerRect, enemySpawnTimerCirc;
+		float enemySpawnTimerMaxRect, enemySpawnTimerMaxCirc;
+		int maxEnemiesRect, maxEnemiesCirc;
 		bool mouseHeld;
 		int health;
 		bool endGame;
@@ -75,6 +76,7 @@ class Game
 		void initFont();
 		void initTextStats();
 		void initTextFps();
+		void initHpBar();
 
 	public :
 		//Constructors / Destructors
@@ -92,12 +94,13 @@ class Game
 		void updateMousePos();
 		void spawnEnemyRect();
 		void spawnEnemyCircle();
-		void updateEnemiesRect();
-		void updateEnemiesCirc();
+		void updateHpBar();
+		void updateEnemies();
 		void updateTextStats();
 		void updateTextFps();
 
 		void render();
+		void rednderHpBar(sf::RenderTarget& target);
 		void renderEnemiesRect(sf::RenderTarget& target);
 		void renderEnemeiesCirc(sf::RenderTarget& target);
 		void renderTextStats(sf::RenderTarget& target);
