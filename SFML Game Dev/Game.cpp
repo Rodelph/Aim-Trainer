@@ -1,87 +1,5 @@
 #include "Game.h"
 
-//
-//
-//
-//
-//		Audio stuff
-//
-//
-//
-//
-
-void Game::initAudio()
-{
-	if (!this->bufferSfx.loadFromFile("src/Music/hit.wav"))
-		std::cout << "INFO::GAME::SFX:: SFX files not loaded !!" << std::endl;
-	else
-		this->soundHit.setBuffer(this->bufferSfx);
-
-	if (!this->musicBG.openFromFile("src/Music/music.wav"))
-		std::cout << "INFO::GAME::Music:: Music files not loaded !!" << std::endl;
-	else
-		this->playBGM();
-}
-
-void Game::playSFX()
-{
-	this->soundHit.play();
-}
-
-void Game::stopSFX()
-{
-	this->soundHit.stop();
-}
-
-void Game::pauseSFX()
-{
-	this->soundHit.pause();
-}
-
-void Game::setVolumeSFX(int vol)
-{
-	this->soundHit.setVolume(vol);
-}
-
-void Game::setPitchSFX(int pitch)
-{
-	this->soundHit.setPitch(pitch);
-}
-
-void Game::playBGM()
-{
-	this->musicBG.play();
-}
-
-void Game::pauseBGM()
-{
-	this->musicBG.pause();
-}
-
-void Game::stopBGM()
-{
-	this->musicBG.stop();
-}
-
-void Game::setVolumeBGM(int vol)
-{
-	this->musicBG.setVolume(vol);
-}
-
-void Game::setPitchBGM(int pitch)
-{
-	this->musicBG.setPitch(pitch);
-}
-
-//
-// 
-// 
-// 
-//		Game Stuff
-// 
-// 
-//
-
 void Game::initializeVariables()
 {
 	this->window = nullptr;
@@ -90,11 +8,11 @@ void Game::initializeVariables()
 
 	this->enemySpawnTimerMaxRect = 1.f;
 	this->enemySpawnTimerRect = this->enemySpawnTimerMaxRect;
-	this->maxEnemiesRect = 3;
+	this->maxEnemiesRect = 1;
 
 	this->enemySpawnTimerMaxCirc = 1.f;
 	this->enemySpawnTimerCirc = this->enemySpawnTimerMaxCirc;
-	this->maxEnemiesCirc = 3;
+	this->maxEnemiesCirc = 1;
 
 	this->mouseHeld = false;
 	this->endGame = false;
@@ -107,7 +25,6 @@ void Game::initWindow()
 	this->window = new sf::RenderWindow(this->videoMode, "Hit me Up !", sf::Style::Titlebar | sf::Style::Close);
 	this->window->setVerticalSyncEnabled(true);
 }
-
 
 void Game::initEnemiesRect()
 {
@@ -140,7 +57,7 @@ void Game::initTextStats()
 	this->uiTextStats.setFont(this->font);
 	this->uiTextStats.setCharacterSize(24);
 	this->uiTextStats.setFillColor(sf::Color::Black);
-	this->uiTextStats.setPosition(0, 0);
+	this->uiTextStats.setPosition(0, 30);
 	this->uiTextStats.setString("NONE");
 }
 
@@ -155,14 +72,18 @@ void Game::initTextFps()
 
 void Game::initHpBar()
 {
+	this->hpBar.setPosition(2, 5);
+	this->hpBar.setSize(sf::Vector2f(200.f, 40.f));
 	this->hpBar.setFillColor(sf::Color::Red);
-	this->hpBar.setPosition(0, 10);
-	this->hpBar.setSize(sf::Vector2f(300.f, 80.f));
 	
-	this->hpBorder.setPosition(0, 10);
-	this->hpBorder.setSize(sf::Vector2f(300.f, 80.f));
+	this->hpBorder.setPosition(2, 5);
+	this->hpBorder.setSize(sf::Vector2f(200.f, 40.f));
 	this->hpBorder.setOutlineColor(sf::Color::Black);
 	this->hpBorder.setOutlineThickness(1.f);
+}
+void Game::initAudio()
+{
+	this->audGame = new AudioGame();
 }
 
 Game::Game()
@@ -171,11 +92,11 @@ Game::Game()
 	this->initWindow();
 	this->initFont();
 	this->initTextStats();
-	this->initHpBar();
 	this->initTextFps();
+	this->initAudio();
+	this->initHpBar();
 	this->initEnemiesRect();
 	this->initEnemiesCirc();
-	this->initAudio();
 }
 
 Game::~Game()
@@ -258,26 +179,27 @@ void Game::spawnEnemyCircle()
 		static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->enemyCircle.getRadius())),
 		0.f
 	);
+
 	int type = rand() % 5;
 	switch (type)
 	{
 		case 0:
 			this->enemyCircle.setFillColor(sf::Color::Green);
-			this->enemyCircle.setRadius(10.f);
+			this->enemyCircle.setRadius(50.f);
 			this->enemyCircle.setOutlineThickness(1.f);
 			this->enemyCircle.setScale(0.5f, 0.5f);
 			break;
 
 		case 1:
 			this->enemyCircle.setFillColor(sf::Color::Red);
-			this->enemyCircle.setRadius(20.f);
+			this->enemyCircle.setRadius(40.f);
 			this->enemyCircle.setOutlineThickness(1.f);
 			this->enemyCircle.setScale(0.5f, 0.5f);
 			break;
 
 		case 2:
 			this->enemyCircle.setFillColor(sf::Color::Cyan);
-			this->enemyCircle.setRadius(20.f);
+			this->enemyCircle.setRadius(30.f);
 			this->enemyCircle.setOutlineThickness(1.f);
 			this->enemyCircle.setScale(0.5f, 0.5f); 
 			break;
@@ -291,14 +213,14 @@ void Game::spawnEnemyCircle()
 
 		case 4:
 			this->enemyCircle.setFillColor(sf::Color::Magenta);
-			this->enemyCircle.setRadius(40.f);
+			this->enemyCircle.setRadius(15.f);
 			this->enemyCircle.setOutlineThickness(1.f);
 			this->enemyCircle.setScale(0.5f, 0.5f);
 			break;
 
 		case 5:
 			this->enemyCircle.setFillColor(sf::Color::White);
-			this->enemyCircle.setRadius(50.f);
+			this->enemyCircle.setRadius(10.f);
 			this->enemyCircle.setOutlineThickness(1.f);
 			this->enemyCircle.setScale(0.5f, 0.5f);
 			break;
@@ -306,12 +228,14 @@ void Game::spawnEnemyCircle()
 	//Spaw, the enemies
 	this->enemiesCirc.push_back(this->enemyCircle);
 }
+
 //Fix hp bar
 void Game::updateHpBar()
 {
 	float healthVal = this->health;
-
-	this->hpBar.setSize(sf::Vector2f(this->health, 80));
+	this->hpBorder.setSize(sf::Vector2f(200, 20));
+	this->hpBar.setSize(sf::Vector2f(this->health, 20));
+	if (this->hpBar.getSize().x > 200) { this->hpBar.setSize(sf::Vector2f(200, 20)); }
 }
 
 //Accessors
@@ -368,8 +292,19 @@ void Game::updateEnemies()
 		if (this->enemiesRect[i].getPosition().y > this->window->getSize().y)
 		{
 			this->enemiesRect.erase(this->enemiesRect.begin() + i);
+
 			//Hp loss
-			this->health -= 1;
+			if (this->enemyRect.getFillColor() == sf::Color::Green) { this->health -= 5; }
+
+			if (this->enemyRect.getFillColor() == sf::Color::Red) { this->health -= 10; }
+
+			if (this->enemyRect.getFillColor() == sf::Color::Cyan) { this->health -= 20; }
+
+			if (this->enemyRect.getFillColor() == sf::Color::Blue) { this->health -= 30; }
+
+			if (this->enemyRect.getFillColor() == sf::Color::White) { this->health -= 50; }
+
+			if (this->enemyRect.getFillColor() == sf::Color::Magenta) { this->health -= 70; }
 		}
 	}
 
@@ -379,7 +314,7 @@ void Game::updateEnemies()
 		{
 			//Spawn the enemy and reset the timer
 			this->spawnEnemyCircle();
-			this->enemySpawnTimerCirc = 10.f;
+			this->enemySpawnTimerCirc = 100.f;
 		}
 		else
 			this->enemySpawnTimerCirc += 1.f;
@@ -394,7 +329,17 @@ void Game::updateEnemies()
 		{
 			this->enemiesCirc.erase(this->enemiesCirc.begin() + i);
 			//Hp loss
-			this->health -= 1;
+			if (this->enemyCircle.getFillColor() == sf::Color::Green) { this->health -= 5; }
+
+			if (this->enemyCircle.getFillColor() == sf::Color::Red) { this->health -= 10; }
+
+			if (this->enemyCircle.getFillColor() == sf::Color::Cyan) { this->health -= 20; }
+
+			if (this->enemyCircle.getFillColor() == sf::Color::Blue) { this->health -= 30; }
+
+			if (this->enemyCircle.getFillColor() == sf::Color::White) { this->health -= 50; }
+
+			if (this->enemyCircle.getFillColor() == sf::Color::Magenta) { this->health -= 70; }
 		}
 	}
 
@@ -410,25 +355,24 @@ void Game::updateEnemies()
 				if (this->enemiesRect[i].getGlobalBounds().contains(this->mousePosView))
 				{
 					//Deleting enemies and point system
-					if (this->enemiesRect[i].getFillColor() == sf::Color::Green)
-						this->points += 500;
-					else if (this->enemiesRect[i].getFillColor() == sf::Color::Red)
-						this->points += 200;
-					else if (this->enemiesRect[i].getFillColor() == sf::Color::Blue)
-						this->points += 50;
-					else if (this->enemiesRect[i].getFillColor() == sf::Color::Cyan)
-						this->points += 100;
-					else if (this->enemiesRect[i].getFillColor() == sf::Color::Magenta)
-						this->points += 20;
-					else if (this->enemiesRect[i].getFillColor() == sf::Color::White)
-						this->points += 10;
-
+					if (this->enemiesRect[i].getFillColor() == sf::Color::Green) { this->health += 2; this->points += 5; }
+					
+					else if (this->enemiesRect[i].getFillColor() == sf::Color::Red) { this->health += 5; this->points += 10; }
+					
+					else if (this->enemiesRect[i].getFillColor() == sf::Color::Blue) { this->health += 10; this->points += 20; }
+					
+					else if (this->enemiesRect[i].getFillColor() == sf::Color::Cyan) { this->health += 20; this->points += 30; }
+					
+					else if (this->enemiesRect[i].getFillColor() == sf::Color::Magenta) { this->health += 30; this->points += 50; }
+					
+					else if (this->enemiesRect[i].getFillColor() == sf::Color::White) { this->hpBar.setSize(sf::Vector2f(200, 20)); this->points += 100; }
+					
 					deleted = true;
 
 					this->enemiesRect.erase(this->enemiesRect.begin() + i);
 
 					//Sfx when u hit a target
-					this->playSFX();
+					this->audGame->playSFX();
 				}
 			}
 
@@ -437,25 +381,24 @@ void Game::updateEnemies()
 				if (this->enemiesCirc[i].getGlobalBounds().contains(this->mousePosView))
 				{
 					//Deleting enemies and point system
-					if (this->enemiesCirc[i].getFillColor() == sf::Color::Green)
-						this->points += 10;
-					else if (this->enemiesCirc[i].getFillColor() == sf::Color::Red)
-						this->points += 20;
-					else if (this->enemiesCirc[i].getFillColor() == sf::Color::Blue)
-						this->points += 50;
-					else if (this->enemiesCirc[i].getFillColor() == sf::Color::Cyan)
-						this->points += 100;
-					else if (this->enemiesCirc[i].getFillColor() == sf::Color::Magenta)
-						this->points += 200;
-					else if (this->enemiesCirc[i].getFillColor() == sf::Color::White)
-						this->points += 500;
-
+					if (this->enemiesCirc[i].getFillColor() == sf::Color::Green){ this->points += 5; this->health += 2; }
+					
+					else if (this->enemiesCirc[i].getFillColor() == sf::Color::Red){ this->points += 10; this->health += 5; }
+					
+					else if (this->enemiesCirc[i].getFillColor() == sf::Color::Blue){ this->health += 10; this->points += 20; }
+					
+					else if (this->enemiesCirc[i].getFillColor() == sf::Color::Cyan){ this->health += 20; this->points += 30; }
+					
+					else if (this->enemiesCirc[i].getFillColor() == sf::Color::Magenta){ this->health += 30; this->points += 50; }
+					
+					else if (this->enemiesCirc[i].getFillColor() == sf::Color::White){ this->hpBar.setSize(sf::Vector2f(200, 20)); this->points += 100; }
+					 
 					deleted = true;
 
 					this->enemiesCirc.erase(this->enemiesCirc.begin() + i);
 
 					//Sfx when u hit a target
-					this->playSFX();
+					this->audGame->playSFX();
 				}
 			}
 		}
@@ -479,8 +422,7 @@ void Game::updateMousePos()
 void Game::updateTextStats()
 {
 	std::stringstream ssStats;
-	ssStats << "Points : " << this->points << "\n"
-		<< "Health : " << this->health << "\n";
+	ssStats << "Points : " << this->points << "\n";
 	this->uiTextStats.setString(ssStats.str());
 }
 
@@ -500,12 +442,12 @@ void Game::update()
 	{
 		this->updateMousePos();
 		this->updateEnemies();
+		this->updateHpBar();
 		this->updateTextStats();
 		this->updateTextFps();
-		this->updateHpBar();
 	}
 
-	if (this->health == 0)
+	if (this->hpBar.getSize().x <= 0)
 	{
 		std::cout << "You lost !!" << std::endl;
 		this->endGame = true;
@@ -540,7 +482,7 @@ void Game::renderEnemeiesCirc(sf::RenderTarget& target)
 
 void Game::rednderHpBar(sf::RenderTarget& target)
 {
-	//target.draw(this->hpBorder);
+	target.draw(this->hpBorder);
 	target.draw(this->hpBar);
 }
 
@@ -555,6 +497,7 @@ void Game::render()
 	this->window->clear(sf::Color(245, 245, 220, 255));
 	this->renderEnemiesRect(*this->window);
 	this->renderEnemeiesCirc(*this->window);
+	this->rednderHpBar(*this->window);
 	this->renderTextFps(*this->window);
 	this->renderTextStats(*this->window);
 	this->window->display();

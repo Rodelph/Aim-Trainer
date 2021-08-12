@@ -147,10 +147,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AudioGame.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="SFML Game Dev.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AudioGame.h" />
     <ClInclude Include="Game.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
