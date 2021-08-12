@@ -81,10 +81,7 @@ void Game::initHpBar()
 	this->hpBorder.setOutlineColor(sf::Color::Black);
 	this->hpBorder.setOutlineThickness(1.f);
 }
-void Game::initAudio()
-{
-	this->audGame = new AudioGame();
-}
+void Game::initAudio() { this->audGame = new AudioGame(); }
 
 Game::Game()
 {
@@ -117,6 +114,7 @@ void Game::spawnEnemyRect()
 		static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->enemyRect.getSize().x)),
 		0.f
 	);
+
 	int type = rand() % 5;
 	switch (type)
 	{
@@ -168,7 +166,8 @@ void Game::spawnEnemyRect()
 
 void Game::spawnEnemyCircle()
 {
-	//Spawns enemies and sets their color and positions 
+
+//Spawns enemies and sets their color and positions 
 //	   Sets a random position
 // 	   Sets a random color
 // 	   Adds enemy to the vector
@@ -239,15 +238,9 @@ void Game::updateHpBar()
 }
 
 //Accessors
-const bool Game::running() const
-{
-	return this->window->isOpen();
-}
+const bool Game::running() const { return this->window->isOpen(); }
 
-const bool Game::getEndGame() const
-{
-	return this->endGame;
-}
+const bool Game::getEndGame() const { return this->endGame; }
 
 //Public functions
 void Game::pollEvents()
@@ -257,13 +250,12 @@ void Game::pollEvents()
 	{
 		switch (this->ev.type)
 		{
-			case sf::Event::Closed:
+			case sf::Event::Closed: 
 				this->window->close();
 				break;
 
 			case sf::Event::KeyPressed:
-				if (this->ev.key.code == sf::Keyboard::Escape)
-					this->window->close();
+				if (this->ev.key.code == sf::Keyboard::Escape) { this->window->close(); }
 				break;
 		}
 	}
@@ -454,38 +446,15 @@ void Game::update()
 	}
 }
 
-void Game::renderTextStats(sf::RenderTarget& target)
-{
-	target.draw(this->uiTextStats);
-}
+void Game::renderTextStats(sf::RenderTarget& target) { target.draw(this->uiTextStats); }
 
-void Game::renderTextFps(sf::RenderTarget& target)
-{
-	target.draw(this->uiFpsStats);
-}
+void Game::renderTextFps(sf::RenderTarget& target) { target.draw(this->uiFpsStats); }
 
-void Game::renderEnemiesRect(sf::RenderTarget& target)
-{
-	for (auto& e : this->enemiesRect)
-	{
-		target.draw(e);
-	}
-}
+void Game::renderEnemiesRect(sf::RenderTarget& target){ for (auto& e : this->enemiesRect) { target.draw(e); } }
 
-void Game::renderEnemeiesCirc(sf::RenderTarget& target)
-{
-	for (auto& e : this->enemiesCirc)
-	{
-		target.draw(e);
-	}
-}
+void Game::renderEnemeiesCirc(sf::RenderTarget& target){ for (auto& e : this->enemiesCirc) { target.draw(e); } }
 
-void Game::rednderHpBar(sf::RenderTarget& target)
-{
-	target.draw(this->hpBorder);
-	target.draw(this->hpBar);
-}
-
+void Game::rednderHpBar(sf::RenderTarget& target){ target.draw(this->hpBorder); target.draw(this->hpBar); }
 
 void Game::render()
 {

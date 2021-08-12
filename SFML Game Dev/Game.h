@@ -29,7 +29,7 @@ class Game
 
 		//Fonts
 		sf::Font font;
-
+		 
 		//Text
 		sf::Text uiTextStats;
 		sf::Text uiFpsStats;
