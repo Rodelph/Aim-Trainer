@@ -9,6 +9,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include "AudioGame.h"
+#include "Texture.h"
 
 
 class Game
@@ -20,16 +21,17 @@ class Game
 		sf::VideoMode videoMode;
 
 		//Game objects
-		sf::RectangleShape enemyRect;
 		sf::CircleShape enemyCircle;
 		sf::RectangleShape hpBar, hpBorder;
 
-		std::vector<sf::RectangleShape> enemiesRect;
 		std::vector<sf::CircleShape> enemiesCirc;
 
+		//Texture game obj
+		Texture* textureObj;
+		
 		//Fonts
 		sf::Font font;
-		 
+
 		//Text
 		sf::Text uiTextStats;
 		sf::Text uiFpsStats;
@@ -39,11 +41,11 @@ class Game
 
 		//Game logic
 		unsigned points;
-		float enemySpawnTimerRect, enemySpawnTimerCirc;
-		float enemySpawnTimerMaxRect, enemySpawnTimerMaxCirc;
-		int maxEnemiesRect, maxEnemiesCirc;
+		float enemySpawnTimerCirc;
+		float enemySpawnTimerMaxCirc;
+		int maxEnemiesCirc;
 		bool mouseHeld;
-		int health;
+		float health;
 		bool endGame;
 
 		//Timers
@@ -58,11 +60,11 @@ class Game
 		void initializeVariables();
 		void initWindow();
 		void initAudio();
-		void initEnemiesRect();
 		void initEnemiesCirc();
 		void initFont();
 		void initTextStats();
 		void initTextFps();
+		void initTexture();
 		void initHpBar();
 
 	public :
@@ -76,19 +78,18 @@ class Game
 	
 		//Functions
 		void pollEvents();
-
+		void spawnEnemyCircle();
+		
 		void update();
 		void updateMousePos();
-		void spawnEnemyRect();
-		void spawnEnemyCircle();
 		void updateHpBar();
 		void updateEnemies();
 		void updateTextStats();
 		void updateTextFps();
+		void updateSpawn();
 
 		void render();
 		void rednderHpBar(sf::RenderTarget& target);
-		void renderEnemiesRect(sf::RenderTarget& target);
 		void renderEnemeiesCirc(sf::RenderTarget& target);
 		void renderTextStats(sf::RenderTarget& target);
 		void renderTextFps(sf::RenderTarget& target);

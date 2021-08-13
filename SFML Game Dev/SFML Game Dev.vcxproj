@@ -150,10 +150,12 @@
     <ClCompile Include="AudioGame.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="SFML Game Dev.cpp" />
+    <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioGame.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
