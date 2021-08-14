@@ -23,7 +23,8 @@ void Game::initWindow()
 	this->videoMode.height = 600;
 	this->videoMode.width = 800;
 	this->window = new sf::RenderWindow(this->videoMode, "Hit me Up !", sf::Style::Titlebar | sf::Style::Close);
-	this->window->setFramerateLimit(60);
+	this->window->setVerticalSyncEnabled(false);
+	this->window->setFramerateLimit(61);
 }
 
 void Game::initEnemiesCirc()
@@ -37,10 +38,8 @@ void Game::initEnemiesCirc()
 
 void Game::initFont()
 {
-	if (!this->font.loadFromFile("src/Fonts/Dosis-Light.ttf"))
-		std::cout << "Info::GAME::InitFonts:: Font not loaded !" << std::endl;
-	else
-		this->font.loadFromFile("src/Fonts/Dosis-Light.ttf");
+	if (!this->font.loadFromFile("src/Fonts/Dosis-Light.ttf")) { std::cout << "Info::GAME::InitFonts:: Font not loaded !" << std::endl; }
+	else { this->font.loadFromFile("src/Fonts/Dosis-Light.ttf");}
 }
 
 void Game::initPointStats()

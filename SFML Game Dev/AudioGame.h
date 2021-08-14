@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef AUDIOGAME_H
+#define AUDIOGAME_H
+
 #include <SFML/Audio.hpp>
 #include <iostream>
 
@@ -13,23 +16,19 @@ class AudioGame
 		//BGM Variables
 		sf::Music musicBG;
 
+		//Audio initializer
+		void initAudio();
+
 	public:
 		AudioGame();
 		virtual ~AudioGame();
 
 		//SFX Functions
-		void initAudio();
 		void playSFX();
 		void stopSFX();
-		void pauseSFX();
-		void setVolumeSFX(int vol);
-		void setPitchSFX(int pitch);
-
+	
 		//BGM Functions
 		void playBGM();
-		void pauseBGM();
 		void stopBGM();
-		void setVolumeBGM(int vol);
-		void setPitchBGM(int pitch);
 };
-
+#endif

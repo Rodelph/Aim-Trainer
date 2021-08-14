@@ -91,5 +91,4 @@ class Game
 		void renderPointStats(sf::RenderTarget& target);
 		void renderFpsStats(sf::RenderTarget& target);
 };
-
 #endif
