@@ -9,8 +9,6 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include "AudioGame.h"
-#include "Texture.h"
-
 
 class Game
 {
@@ -25,15 +23,13 @@ class Game
 		sf::RectangleShape hpBar, hpBorder;
 
 		std::vector<sf::CircleShape> enemiesCirc;
-
-		//Texture game obj
-		Texture* textureObj;
 		
 		//Fonts
 		sf::Font font;
 
 		//Text
-		sf::Text uiTextStats;
+		sf::Text uiPointStats;
+		sf::Text uiLevelStats;
 		sf::Text uiFpsStats;
 
 		//AduioGame object pointer
@@ -62,9 +58,9 @@ class Game
 		void initAudio();
 		void initEnemiesCirc();
 		void initFont();
-		void initTextStats();
-		void initTextFps();
-		void initTexture();
+		void initPointStats();
+		void initLevelStats();
+		void initFpsStats();
 		void initHpBar();
 
 	public :
@@ -75,24 +71,25 @@ class Game
 		//Accessors
 		const bool running() const;
 		const bool getEndGame() const;
-	
-		//Functions
 		void pollEvents();
-		void spawnEnemyCircle();
-		
+
+		//Functions
+		void updateEnemyCircle();
 		void update();
 		void updateMousePos();
 		void updateHpBar();
 		void updateEnemies();
-		void updateTextStats();
-		void updateTextFps();
+		void updatePointStats();
+		void updateFpsStats();
+		void updateLevelStats();
 		void updateSpawn();
 
 		void render();
 		void rednderHpBar(sf::RenderTarget& target);
 		void renderEnemeiesCirc(sf::RenderTarget& target);
-		void renderTextStats(sf::RenderTarget& target);
-		void renderTextFps(sf::RenderTarget& target);
+		void renderLevelStats(sf::RenderTarget& target);
+		void renderPointStats(sf::RenderTarget& target);
+		void renderFpsStats(sf::RenderTarget& target);
 };
 
 #endif
