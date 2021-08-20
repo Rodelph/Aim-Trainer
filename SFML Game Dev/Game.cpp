@@ -1,5 +1,6 @@
 #include "Game.h"
 
+
 /// 
 /// Initialization functions that will initialize everything for the game
 /// 
@@ -444,6 +445,7 @@ void Game::render()
 /// 
 
 //Accessors
+           
 const bool Game::running() const { return this->window->isOpen(); }
 
 const bool Game::getEndGame() const { return this->endGame; }
@@ -458,13 +460,13 @@ void Game::pollEvents()
 	{
 		switch (this->ev.type)
 		{
-		case sf::Event::Closed:
-			this->window->close();
-			break;
+			case sf::Event::Closed:
+				this->window->close();
+				break;
 
-		case sf::Event::KeyPressed:
-			if (this->ev.key.code == sf::Keyboard::Escape) { this->window->close(); }
-			break;
+			case sf::Event::KeyPressed:
+				if (this->ev.key.code == sf::Keyboard::Escape) { this->window->close(); }
+				break;
 		}
 	}
 }
