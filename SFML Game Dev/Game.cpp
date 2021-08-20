@@ -16,6 +16,7 @@ void Game::initializeVariables()
 
 	this->mouseHeld = false;
 	this->endGame = false;
+	this->pauseGame = false;
 }
 
 void Game::initWindow()
@@ -79,6 +80,30 @@ void Game::initHpBar()
 	this->hpBorder.setSize(sf::Vector2f(200.f, 20.f));
 	this->hpBorder.setOutlineColor(sf::Color::Black);
 	this->hpBorder.setOutlineThickness(1.f);
+}
+
+void Game::initRestart()
+{
+	this->uiRestart.setFont(this->font);
+	this->uiRestart.setPosition(330, 200);
+	this->uiRestart.setCharacterSize(24);
+	this->uiRestart.setFillColor(sf::Color::Black);
+}
+
+void Game::initScore()
+{
+	this->uiScore.setFont(this->font);
+	this->uiScore.setPosition(330, 300);
+	this->uiScore.setCharacterSize(24);
+	this->uiScore.setFillColor(sf::Color::Black);
+}
+
+void Game::initQuit()
+{
+	this->uiQuit.setFont(this->font);
+	this->uiQuit.setPosition(330, 400);
+	this->uiQuit.setFillColor(sf::Color::Black);
+	this->uiQuit.setCharacterSize(24);
 }
 
 void Game::initAudio() { this->audGame = new AudioGame(); }
@@ -147,7 +172,7 @@ void Game::updateEnemyCircle()
 			break;
 	}
 
-	//Spaw, the enemies
+	//Spawn, the enemies
 	this->enemiesCirc.push_back(this->enemyCircle);
 }
 
@@ -217,7 +242,7 @@ void Game::updateEnemies()
 					else if (this->enemyCircle.getRadius() == 10.f){ this->hpBar.setSize(sf::Vector2f(200, 20)); this->points += 100; if (this->health >= 200.f) this->health = 200.f;}
 					 
 					deleted = true;
-
+					
 					this->enemiesCirc.erase(this->enemiesCirc.begin() + i);
 
 					//Sfx when u hit a target
@@ -236,7 +261,7 @@ void Game::updateMousePos()
 {
 	/*
 	Updates the mouse positions :
-		Mouse position relateve to window (Vector2i)
+		Mouse position relative to window (Vector2i)
 	*/
 	this->mousePosWindow = sf::Mouse::getPosition(*this->window);
 	this->mousePosView = this->window->mapPixelToCoords(this->mousePosWindow);
@@ -317,6 +342,27 @@ void Game::updateLevelStats()
 	}
 }
 
+void Game::updateRestart()
+{
+	std::stringstream restart;
+	restart << "Restart\n";
+	this->uiRestart.setString(restart.str());
+}
+
+void Game::updateScore()
+{
+	std::stringstream score;
+	score << "You final score is : " << this->points << "\n";
+	this->uiScore.setString(score.str());
+}
+
+void Game::updateQuit() 
+{ 
+	std::stringstream quit;
+	quit << "Quit\n";
+	this->uiQuit.setString(quit.str());
+}
+
 void Game::updateSpawn()
 {
 	if (this->points >=  400) this->maxEnemiesCirc = 2;
@@ -331,7 +377,7 @@ void Game::updateSpawn()
 void Game::update()
 {
 	this->pollEvents();
-	if(!this->endGame)
+	if(!this->pauseGame && !this->endGame)
 	{
 		this->updateMousePos();
 		this->updateEnemies();
@@ -341,12 +387,17 @@ void Game::update()
 		this->updateFpsStats();
 		this->updateLevelStats();
 	}
-	
-	if (this->hpBar.getSize().x <= 0)
+
+	if (this->pauseGame)
 	{
-		std::cout << "You lost !!" << std::endl;
-		this->endGame = true;
+		audGame->stopBGM();
+		this->window->setFramerateLimit(1);
+		this->updateRestart();
+		this->updateScore();
+		this->updateQuit();
 	}
+	
+	if (this->hpBar.getSize().x <= 0) { this->pauseGame = true; }
 }
 
 /// 
@@ -363,6 +414,12 @@ void Game::renderLevelStats(sf::RenderTarget& target) { target.draw(this->uiLeve
 
 void Game::rednderHpBar(sf::RenderTarget& target){ target.draw(this->hpBorder); target.draw(this->hpBar); }
 
+void Game::renderQuit(sf::RenderTarget& target) { target.draw(this->uiQuit); }
+
+void Game::renderRestart(sf::RenderTarget& target) { target.draw(this->uiRestart); }
+
+void Game::renderScore(sf::RenderTarget& target) { target.draw(this->uiScore); }
+
 void Game::render()
 {
 	/*Renders the game object by : 
@@ -376,6 +433,9 @@ void Game::render()
 	this->renderFpsStats(*this->window);
 	this->renderPointStats(*this->window);
 	this->renderLevelStats(*this->window);
+	this->renderRestart(*this->window);
+	this->renderScore(*this->window);
+	this->renderQuit(*this->window);
 	this->window->display();
 }
 
@@ -387,6 +447,8 @@ void Game::render()
 const bool Game::running() const { return this->window->isOpen(); }
 
 const bool Game::getEndGame() const { return this->endGame; }
+
+const bool Game::getPauseGame() const { return this->pauseGame; }
 
 //Public functions
 void Game::pollEvents()
@@ -412,6 +474,9 @@ Game::Game()
 	this->initializeVariables();
 	this->initWindow();
 	this->initFont();
+	this->initQuit();
+	this->initRestart();
+	this->initScore();
 	this->initPointStats();
 	this->initFpsStats();
 	this->initLevelStats();

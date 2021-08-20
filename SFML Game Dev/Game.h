@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef GAME_H
-#define GAME_H
-
 #include <vector>
 #include <ctime>
 #include <sstream>
@@ -21,7 +18,6 @@ class Game
 		//Game objects
 		sf::CircleShape enemyCircle;
 		sf::RectangleShape hpBar, hpBorder;
-
 		std::vector<sf::CircleShape> enemiesCirc;
 		
 		//Fonts
@@ -31,6 +27,9 @@ class Game
 		sf::Text uiPointStats;
 		sf::Text uiLevelStats;
 		sf::Text uiFpsStats;
+		sf::Text uiRestart;
+		sf::Text uiQuit;
+		sf::Text uiScore;
 
 		//AduioGame object pointer
 		AudioGame* audGame;
@@ -42,7 +41,7 @@ class Game
 		int maxEnemiesCirc;
 		bool mouseHeld;
 		float health;
-		bool endGame;
+		bool endGame, pauseGame;
 
 		//Timers
 		sf::Clock clock;
@@ -62,15 +61,19 @@ class Game
 		void initLevelStats();
 		void initFpsStats();
 		void initHpBar();
+		void initRestart();
+		void initScore();
+		void initQuit();
 
 	public :
-		//Constructors / Destructors
+		//Constructor / Destructor
 		Game();
 		virtual ~Game();
 	
 		//Accessors
 		const bool running() const;
 		const bool getEndGame() const;
+		const bool getPauseGame() const;
 		void pollEvents();
 
 		//Functions
@@ -83,12 +86,17 @@ class Game
 		void updateFpsStats();
 		void updateLevelStats();
 		void updateSpawn();
+		void updateRestart();
+		void updateScore();
+		void updateQuit();
 
 		void render();
+		void renderQuit(sf::RenderTarget& target);
+		void renderRestart(sf::RenderTarget& target);
+		void renderScore(sf::RenderTarget& target);
 		void rednderHpBar(sf::RenderTarget& target);
 		void renderEnemeiesCirc(sf::RenderTarget& target);
 		void renderLevelStats(sf::RenderTarget& target);
 		void renderPointStats(sf::RenderTarget& target);
 		void renderFpsStats(sf::RenderTarget& target);
 };
-#endif
