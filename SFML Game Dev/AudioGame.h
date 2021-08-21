@@ -4,7 +4,7 @@
 #define AUDIOGAME_H
 
 #include <SFML/Audio.hpp>
-#include <iostream>
+#include "IOFile.h"
 
 class AudioGame
 {
@@ -16,8 +16,11 @@ class AudioGame
 		//BGM Variables
 		sf::Music musicBG;
 
+		IOFile* ioFile = new IOFile();
+
 		//Audio initializer
 		void initAudio();
+		void initIOFiles();
 
 	public:
 		AudioGame();

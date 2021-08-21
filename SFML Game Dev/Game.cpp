@@ -24,7 +24,7 @@ void Game::initWindow()
 {
 	this->videoMode.height = 600;
 	this->videoMode.width = 800;
-	this->window = new sf::RenderWindow(this->videoMode, "Hit me Up !", sf::Style::Titlebar | sf::Style::Close);
+	this->window = new sf::RenderWindow(this->videoMode, this->ioFile->getTitle(), sf::Style::Titlebar | sf::Style::Close);
 	this->window->setVerticalSyncEnabled(false);
 	this->window->setFramerateLimit(61);
 }
@@ -40,8 +40,8 @@ void Game::initEnemiesCirc()
 
 void Game::initFont()
 {
-	if (!this->font.loadFromFile("src/Fonts/Dosis-Light.ttf")) { std::cout << "Info::GAME::InitFonts:: Font not loaded !" << std::endl; }
-	else { this->font.loadFromFile("src/Fonts/Dosis-Light.ttf");}
+	if (!this->font.loadFromFile(this->ioFile->getFontDir())) { std::cout << this->ioFile->getError() << std::endl; }
+	else { this->font.loadFromFile(this->ioFile->getFontDir());}
 }
 
 void Game::initPointStats()
@@ -50,7 +50,6 @@ void Game::initPointStats()
 	this->uiPointStats.setCharacterSize(24);
 	this->uiPointStats.setFillColor(sf::Color::Black);
 	this->uiPointStats.setPosition(0, 30);
-	this->uiPointStats.setString("NONE");
 }
 
 void Game::initLevelStats()
@@ -59,7 +58,6 @@ void Game::initLevelStats()
 	this->uiLevelStats.setCharacterSize(24);
 	this->uiLevelStats.setFillColor(sf::Color::Black);
 	this->uiLevelStats.setPosition(0, 60);
-	this->uiLevelStats.setString("NONE");
 }
 
 void Game::initFpsStats()
@@ -68,13 +66,12 @@ void Game::initFpsStats()
 	this->uiFpsStats.setCharacterSize(18);
 	this->uiFpsStats.setFillColor(sf::Color::Black);
 	this->uiFpsStats.setPosition(735, 0);
-	this->uiFpsStats.setString("NONE");
 }
 
 void Game::initHpBar()
 {
 	this->hpBar.setPosition(2, 5);
-	this->hpBar.setSize(sf::Vector2f(200.f, 40.f));
+	this->hpBar.setSize(sf::Vector2f(200.f, 20.f));
 	this->hpBar.setFillColor(sf::Color::Red);
 	
 	this->hpBorder.setPosition(2, 5);
@@ -94,7 +91,7 @@ void Game::initRestart()
 void Game::initScore()
 {
 	this->uiScore.setFont(this->font);
-	this->uiScore.setPosition(330, 300);
+	this->uiScore.setPosition(280, 300);
 	this->uiScore.setCharacterSize(24);
 	this->uiScore.setFillColor(sf::Color::Black);
 }
@@ -102,7 +99,7 @@ void Game::initScore()
 void Game::initQuit()
 {
 	this->uiQuit.setFont(this->font);
-	this->uiQuit.setPosition(330, 400);
+	this->uiQuit.setPosition(342, 400);
 	this->uiQuit.setFillColor(sf::Color::Black);
 	this->uiQuit.setCharacterSize(24);
 }
@@ -230,17 +227,17 @@ void Game::updateEnemies()
 				if (this->enemiesCirc[i].getGlobalBounds().contains(this->mousePosView))
 				{
 					//Deleting enemies and point system
-					if (this->enemyCircle.getRadius() == 50.f){ this->points += 5; this->health += 2.f; if (this->health >= 200.f) this->health = 200.f;}
+					if (this->enemyCircle.getRadius() == 50.f)      { this->points += 5; this->health += 2.f;     if (this->health >= 200.f) this->health = 200.f;}
 					
-					else if (this->enemyCircle.getRadius() == 40.f){ this->points += 10; this->health += 5.f; if (this->health >= 200.f) this->health = 200.f;}
+					else if (this->enemyCircle.getRadius() == 40.f) { this->points += 10; this->health += 5.f;    if (this->health >= 200.f) this->health = 200.f;}
 					
-					else if (this->enemyCircle.getRadius() == 30.f){ this->health += 10; this->points += 20.f; if (this->health >= 200.f) this->health = 200.f;}
+					else if (this->enemyCircle.getRadius() == 30.f) { this->health += 10; this->points += 20.f;   if (this->health >= 200.f) this->health = 200.f;}
 					
-					else if (this->enemyCircle.getRadius() == 20.f) { this->health += 20; this->points += 30.f; if (this->health >= 200.f) this->health = 200.f;}
+					else if (this->enemyCircle.getRadius() == 20.f) { this->health += 20; this->points += 30.f;   if (this->health >= 200.f) this->health = 200.f;}
 					
-					else if (this->enemyCircle.getRadius() == 15.f){ this->health += 30; this->points += 50.f; if (this->health >= 200.f) this->health = 200.f;}
+					else if (this->enemyCircle.getRadius() == 15.f) { this->health += 30; this->points += 50.f;   if (this->health >= 200.f) this->health = 200.f;}
 					
-					else if (this->enemyCircle.getRadius() == 10.f){ this->hpBar.setSize(sf::Vector2f(200, 20)); this->points += 100; if (this->health >= 200.f) this->health = 200.f;}
+					else if (this->enemyCircle.getRadius() == 10.f) { this->hpBar.setSize(sf::Vector2f(200, 20)); if (this->health >= 200.f) this->health = 200.f;  this->points += 100; }
 					 
 					deleted = true;
 					
@@ -252,10 +249,7 @@ void Game::updateEnemies()
 			}
 		}
 	}
-	else
-	{
-		this->mouseHeld = false;
-	}
+	else { this->mouseHeld = false; }
 }
 
 void Game::updateMousePos()
@@ -378,6 +372,7 @@ void Game::updateSpawn()
 void Game::update()
 {
 	this->pollEvents();
+
 	if(!this->pauseGame && !this->endGame)
 	{
 		this->updateMousePos();
@@ -398,32 +393,33 @@ void Game::update()
 		this->updateQuit();
 	}
 	
-	if (this->hpBar.getSize().x <= 0) { this->pauseGame = true; }
+	if (this->hpBar.getSize().x <= 0) { this->pauseGame = true; this->hpBar.setSize(sf::Vector2f(0.f,200.f)); }
 }
 
 /// 
 /// Render functions that will be used to render the game
 /// 
 
-void Game::renderPointStats(sf::RenderTarget& target) { target.draw(this->uiPointStats); }
+void Game::renderPointStats(sf::RenderTarget& target)   { target.draw(this->uiPointStats); }
 
-void Game::renderFpsStats(sf::RenderTarget& target) { target.draw(this->uiFpsStats); }
+void Game::renderFpsStats(sf::RenderTarget& target)     { target.draw(this->uiFpsStats); }
 
-void Game::renderEnemeiesCirc(sf::RenderTarget& target){ for (auto& e : this->enemiesCirc) { target.draw(e); } }
+void Game::renderLevelStats(sf::RenderTarget& target)   { target.draw(this->uiLevelStats); }
 
-void Game::renderLevelStats(sf::RenderTarget& target) { target.draw(this->uiLevelStats); }
+void Game::renderQuit(sf::RenderTarget& target)			{ target.draw(this->uiQuit); }
 
-void Game::rednderHpBar(sf::RenderTarget& target){ target.draw(this->hpBorder); target.draw(this->hpBar); }
+void Game::renderRestart(sf::RenderTarget& target)      { target.draw(this->uiRestart); }
 
-void Game::renderQuit(sf::RenderTarget& target) { target.draw(this->uiQuit); }
+void Game::renderScore(sf::RenderTarget& target)        { target.draw(this->uiScore); }
 
-void Game::renderRestart(sf::RenderTarget& target) { target.draw(this->uiRestart); }
+void Game::rednderHpBar(sf::RenderTarget& target)		{ target.draw(this->hpBorder); target.draw(this->hpBar); }
 
-void Game::renderScore(sf::RenderTarget& target) { target.draw(this->uiScore); }
+void Game::renderEnemeiesCirc(sf::RenderTarget& target) { for (auto& e : this->enemiesCirc) { target.draw(e); } }
 
 void Game::render()
 {
-	/*Renders the game object by : 
+	/*
+	  Renders the game object by : 
 		Clearing the old frame
 		Rendering objects
 		Displaying them

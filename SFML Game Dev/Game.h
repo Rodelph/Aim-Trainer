@@ -5,7 +5,10 @@
 #include <sstream>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
+#include <SFGUI/SFGUI.hpp>
+#include <SFGUI/Widget.hpp>
 #include "AudioGame.h"
+#include "IOFile.h"
 
 class Game
 {
@@ -22,6 +25,12 @@ class Game
 		
 		//Fonts
 		sf::Font font;
+
+		//Button 
+		sfg::SFGUI sfgui;
+
+		//IO object
+		IOFile* ioFile = new IOFile();
 
 		//Text
 		sf::Text uiPointStats;

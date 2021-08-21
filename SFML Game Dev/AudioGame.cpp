@@ -6,10 +6,10 @@ AudioGame::~AudioGame() { this->stopSFX(); this->stopBGM(); }
 
 void AudioGame::initAudio()
 {
-	if (!this->bufferSfx.loadFromFile("src/Music/hit.wav")) { std::cout << "INFO::GAME::SFX:: SFX files not loaded !!" << std::endl; }
+	if (!this->bufferSfx.loadFromFile(this->ioFile->getSFXFile())) { std::cout << this->ioFile->getSfxError() << std::endl; }
 	else { this->soundHit.setBuffer(this->bufferSfx); }
 
-	if (!this->musicBG.openFromFile("src/Music/music.wav")) { std::cout << "INFO::GAME::Music:: Music files not loaded !!" << std::endl; }
+	if (!this->musicBG.openFromFile(this->ioFile->getBGMFile())) { std::cout << this->ioFile->getBgmError() << std::endl; }
 	else { this->playBGM(); }
 }
 
