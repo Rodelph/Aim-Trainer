@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef AUDIOGAME_H
-#define AUDIOGAME_H
-
 #include <SFML/Audio.hpp>
 #include "IOFile.h"
 
@@ -34,4 +31,3 @@ class AudioGame
 		void playBGM();
 		void stopBGM();
 };
-#endif

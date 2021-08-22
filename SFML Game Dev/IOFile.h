@@ -20,7 +20,7 @@ class IOFile
 	public:
 		const std::string getFontDir() const;
 		const std::string getTitle() const;
-		const std::string getError() const;
+		const std::string getFontError() const;
 		const std::string getSfxError() const;
 		const std::string getBgmError() const;
 		const std::string getBGMFile() const;

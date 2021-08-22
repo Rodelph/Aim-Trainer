@@ -3,10 +3,10 @@
 #include <vector>
 #include <ctime>
 #include <sstream>
+//#include <SFGUI/SFGUI.hpp>
+//#include <SFGUI/Widgets.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
-#include <SFGUI/SFGUI.hpp>
-#include <SFGUI/Widget.hpp>
 #include "AudioGame.h"
 #include "IOFile.h"
 
@@ -22,12 +22,12 @@ class Game
 		sf::CircleShape enemyCircle;
 		sf::RectangleShape hpBar, hpBorder;
 		std::vector<sf::CircleShape> enemiesCirc;
-		
+
 		//Fonts
 		sf::Font font;
 
 		//Button 
-		sfg::SFGUI sfgui;
+		//sfg::SFGUI sfgui;
 
 		//IO object
 		IOFile* ioFile = new IOFile();
@@ -87,6 +87,7 @@ class Game
 
 		//Functions
 		void updateEnemyCircle();
+		//void updateGui();
 		void update();
 		void updateMousePos();
 		void updateHpBar();
@@ -103,7 +104,7 @@ class Game
 		void renderQuit(sf::RenderTarget& target);
 		void renderRestart(sf::RenderTarget& target);
 		void renderScore(sf::RenderTarget& target);
-		void rednderHpBar(sf::RenderTarget& target);
+		void renderHpBar(sf::RenderTarget& target);
 		void renderEnemeiesCirc(sf::RenderTarget& target);
 		void renderLevelStats(sf::RenderTarget& target);
 		void renderPointStats(sf::RenderTarget& target);

@@ -1,6 +1,5 @@
 #include "Game.h"
 
-
 /// 
 /// Initialization functions that will initialize everything for the game
 /// 
@@ -19,6 +18,32 @@ void Game::initializeVariables()
 	this->endGame = false;
 	this->pauseGame = false;
 }
+
+/*
+void Game::updateGui()
+{
+	sfg::SFGUI sfgui;
+	auto window = sfg::Window::Create();
+
+	auto box = sfg::Box::Create(sfg::Box::Orientation::VERTICAL, 5.f);
+
+	auto resButton = sfg::Button::Create("Restart");
+	box->Pack(resButton);
+
+	auto quitButton = sfg::Button::Create("Quit");
+	box->Pack(quitButton);
+
+	resButton->GetSignal(sfg::Widget::OnLeftClick).Connect([&resButton]
+		{
+			std::cout << "kekw";
+		});
+
+	box->Pack(sfg::Separator::Create());
+
+	window->Add(box);
+	sfgui.Display(*this->window);
+}
+*/
 
 void Game::initWindow()
 {
@@ -40,7 +65,7 @@ void Game::initEnemiesCirc()
 
 void Game::initFont()
 {
-	if (!this->font.loadFromFile(this->ioFile->getFontDir())) { std::cout << this->ioFile->getError() << std::endl; }
+	if (!this->font.loadFromFile(this->ioFile->getFontDir())) { std::cout << this->ioFile->getFontError() << std::endl; }
 	else { this->font.loadFromFile(this->ioFile->getFontDir());}
 }
 
@@ -106,9 +131,13 @@ void Game::initQuit()
 
 void Game::initAudio() { this->audGame = new AudioGame(); }
 
+
+
 /// 
 /// Update functions that will be used to update the game
-/// 
+///  
+
+
 
 void Game::updateEnemyCircle()
 {
@@ -255,8 +284,8 @@ void Game::updateEnemies()
 void Game::updateMousePos()
 {
 	/*
-	Updates the mouse positions :
-		Mouse position relative to window (Vector2i)
+		Updates the mouse positions :
+			Mouse position relative to window (Vector2i)
 	*/
 	this->mousePosWindow = sf::Mouse::getPosition(*this->window);
 	this->mousePosView = this->window->mapPixelToCoords(this->mousePosWindow);
@@ -387,7 +416,7 @@ void Game::update()
 	if (this->pauseGame)
 	{
 		audGame->stopBGM();
-		this->window->setFramerateLimit(1);
+		//this->updateGui();
 		this->updateRestart();
 		this->updateScore();
 		this->updateQuit();
@@ -396,9 +425,13 @@ void Game::update()
 	if (this->hpBar.getSize().x <= 0) { this->pauseGame = true; this->hpBar.setSize(sf::Vector2f(0.f,200.f)); }
 }
 
+
+
 /// 
 /// Render functions that will be used to render the game
 /// 
+
+
 
 void Game::renderPointStats(sf::RenderTarget& target)   { target.draw(this->uiPointStats); }
 
@@ -412,7 +445,7 @@ void Game::renderRestart(sf::RenderTarget& target)      { target.draw(this->uiRe
 
 void Game::renderScore(sf::RenderTarget& target)        { target.draw(this->uiScore); }
 
-void Game::rednderHpBar(sf::RenderTarget& target)		{ target.draw(this->hpBorder); target.draw(this->hpBar); }
+void Game::renderHpBar(sf::RenderTarget& target)		{ target.draw(this->hpBorder); target.draw(this->hpBar); }
 
 void Game::renderEnemeiesCirc(sf::RenderTarget& target) { for (auto& e : this->enemiesCirc) { target.draw(e); } }
 
@@ -426,7 +459,7 @@ void Game::render()
 	*/
 	this->window->clear(sf::Color(115, 147, 161, 255));
 	this->renderEnemeiesCirc(*this->window);
-	this->rednderHpBar(*this->window);
+	this->renderHpBar(*this->window);
 	this->renderFpsStats(*this->window);
 	this->renderPointStats(*this->window);
 	this->renderLevelStats(*this->window);
@@ -440,8 +473,7 @@ void Game::render()
 /// Game States, poll events, constructor and destructor
 /// 
 
-//Accessors
-           
+//Accessors   
 const bool Game::running() const { return this->window->isOpen(); }
 
 const bool Game::getEndGame() const { return this->endGame; }

@@ -1,9 +1,8 @@
 #include "IOFile.h"
 
-
 const std::string IOFile::getFontDir() const { return this->dosisFont; }
 
-const std::string IOFile::getError() const { return this->gmErrorInitFont; }
+const std::string IOFile::getFontError() const { return this->gmErrorInitFont; }
 
 const std::string IOFile::getSfxError() const { return this->gmErrorInitSFX; }
 
