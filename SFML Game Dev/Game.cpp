@@ -19,32 +19,6 @@ void Game::initializeVariables()
 	this->pauseGame = false;
 }
 
-/*
-void Game::updateGui()
-{
-	sfg::SFGUI sfgui;
-	auto window = sfg::Window::Create();
-
-	auto box = sfg::Box::Create(sfg::Box::Orientation::VERTICAL, 5.f);
-
-	auto resButton = sfg::Button::Create("Restart");
-	box->Pack(resButton);
-
-	auto quitButton = sfg::Button::Create("Quit");
-	box->Pack(quitButton);
-
-	resButton->GetSignal(sfg::Widget::OnLeftClick).Connect([&resButton]
-		{
-			std::cout << "kekw";
-		});
-
-	box->Pack(sfg::Separator::Create());
-
-	window->Add(box);
-	sfgui.Display(*this->window);
-}
-*/
-
 void Game::initWindow()
 {
 	this->videoMode.height = 600;
@@ -130,6 +104,8 @@ void Game::initQuit()
 }
 
 void Game::initAudio() { this->audGame = new AudioGame(); }
+
+void Game::initMenu() { this->menuObj = new Menu(300.f,300.f); }
 
 
 
@@ -387,6 +363,24 @@ void Game::updateQuit()
 	this->uiQuit.setString(quit.str());
 }
 
+void Game::updateMenu()
+{
+	this->menuObj->menu[0].setFont(this->font);
+	this->menuObj->menu[0].setFillColor(sf::Color::Red);
+	this->menuObj->menu[0].setString("Restart");
+	this->menuObj->menu[0].setPosition(sf::Vector2f(300 / 2, 300 / (MAX_NUMBER_ITEMS + 1) * 1));
+
+	this->menuObj->menu[1].setFont(this->font);
+	this->menuObj->menu[1].setFillColor(sf::Color::Red);
+	this->menuObj->menu[1].setString("Help");
+	this->menuObj->menu[1].setPosition(sf::Vector2f(300 / 2, 300 / (MAX_NUMBER_ITEMS + 1) * 2));
+
+	this->menuObj->menu[2].setFont(this->font);
+	this->menuObj->menu[2].setFillColor(sf::Color::Red);
+	this->menuObj->menu[2].setString("Quit");
+	this->menuObj->menu[2].setPosition(sf::Vector2f(300 / 2, 300 / (MAX_NUMBER_ITEMS + 1) * 3));
+}
+
 void Game::updateSpawn()
 {
 	if (this->points >=  400) this->maxEnemiesCirc = 2;
@@ -416,10 +410,10 @@ void Game::update()
 	if (this->pauseGame)
 	{
 		audGame->stopBGM();
-		//this->updateGui();
-		this->updateRestart();
-		this->updateScore();
-		this->updateQuit();
+		//this->updateRestart();
+		//this->updateScore();
+		//this->updateQuit();
+		this->updateMenu();
 	}
 	
 	if (this->hpBar.getSize().x <= 0) { this->pauseGame = true; this->hpBar.setSize(sf::Vector2f(0.f,200.f)); }
@@ -449,6 +443,8 @@ void Game::renderHpBar(sf::RenderTarget& target)		{ target.draw(this->hpBorder);
 
 void Game::renderEnemeiesCirc(sf::RenderTarget& target) { for (auto& e : this->enemiesCirc) { target.draw(e); } }
 
+void Game::renderMenu(sf::RenderTarget& target) { for (int i = 0; i < MAX_NUMBER_ITEMS; i++) { target.draw(this->menuObj->menu[i]); } }
+
 void Game::render()
 {
 	/*
@@ -466,6 +462,7 @@ void Game::render()
 	this->renderRestart(*this->window);
 	this->renderScore(*this->window);
 	this->renderQuit(*this->window);
+	this->renderMenu(*this->window);
 	this->window->display();
 }
 

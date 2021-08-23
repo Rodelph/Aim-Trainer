@@ -3,12 +3,10 @@
 #include <vector>
 #include <ctime>
 #include <sstream>
-//#include <SFGUI/SFGUI.hpp>
-//#include <SFGUI/Widgets.hpp>
 #include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
 #include "AudioGame.h"
 #include "IOFile.h"
+#include "Menu.h"
 
 class Game
 {
@@ -26,11 +24,11 @@ class Game
 		//Fonts
 		sf::Font font;
 
-		//Button 
-		//sfg::SFGUI sfgui;
-
 		//IO object
 		IOFile* ioFile = new IOFile();
+
+		//Menu Obj
+		Menu *menuObj;
 
 		//Text
 		sf::Text uiPointStats;
@@ -40,7 +38,7 @@ class Game
 		sf::Text uiQuit;
 		sf::Text uiScore;
 
-		//AduioGame object pointer
+		//AduioGame object
 		AudioGame* audGame;
 
 		//Game logic
@@ -64,6 +62,7 @@ class Game
 		void initializeVariables();
 		void initWindow();
 		void initAudio();
+		void initMenu();
 		void initEnemiesCirc();
 		void initFont();
 		void initPointStats();
@@ -87,7 +86,6 @@ class Game
 
 		//Functions
 		void updateEnemyCircle();
-		//void updateGui();
 		void update();
 		void updateMousePos();
 		void updateHpBar();
@@ -99,6 +97,7 @@ class Game
 		void updateRestart();
 		void updateScore();
 		void updateQuit();
+		void updateMenu();
 
 		void render();
 		void renderQuit(sf::RenderTarget& target);
@@ -109,4 +108,5 @@ class Game
 		void renderLevelStats(sf::RenderTarget& target);
 		void renderPointStats(sf::RenderTarget& target);
 		void renderFpsStats(sf::RenderTarget& target);
+		void renderMenu(sf::RenderTarget& target);
 };
