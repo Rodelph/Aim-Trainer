@@ -7,17 +7,18 @@ class AudioGame
 {
 	private:
 		//SFX Variables
-		sf::SoundBuffer bufferSfx;
+		sf::SoundBuffer bufferSfx, bufferBGM;
 		sf::Sound soundHit;
 
-		//BGM Variables
-		sf::Music musicBG;
+		//BGM var
+		sf::Music bgm;
 
+		//IO object
 		IOFile* ioFile = new IOFile();
 
 		//Audio initializer
-		void initAudio();
-		void initIOFiles();
+		void initAudioBGM();
+		void initAudioSFX();
 
 	public:
 		AudioGame();
@@ -25,7 +26,6 @@ class AudioGame
 
 		//SFX Functions
 		void playSFX();
-		void stopSFX();
 	
 		//BGM Functions
 		void playBGM();

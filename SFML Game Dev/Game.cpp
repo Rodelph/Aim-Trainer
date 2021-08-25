@@ -82,7 +82,7 @@ void Game::initHpBar()
 void Game::initRestart()
 {
 	this->uiRestart.setFont(this->font);
-	this->uiRestart.setPosition(330, 200);
+	this->uiRestart.setPosition(250, 350);
 	this->uiRestart.setCharacterSize(24);
 	this->uiRestart.setFillColor(sf::Color::Black);
 }
@@ -90,40 +90,19 @@ void Game::initRestart()
 void Game::initScore()
 {
 	this->uiScore.setFont(this->font);
-	this->uiScore.setPosition(280, 300);
+	this->uiScore.setPosition(280, 200);
 	this->uiScore.setCharacterSize(24);
 	this->uiScore.setFillColor(sf::Color::Black);
 }
 
-void Game::initQuit()
-{
-	this->uiQuit.setFont(this->font);
-	this->uiQuit.setPosition(342, 400);
-	this->uiQuit.setFillColor(sf::Color::Black);
-	this->uiQuit.setCharacterSize(24);
-}
-
 void Game::initAudio() { this->audGame = new AudioGame(); }
-
-void Game::initMenu() { this->menuObj = new Menu(300.f,300.f); }
-
-
 
 /// 
 /// Update functions that will be used to update the game
 ///  
 
-
-
 void Game::updateEnemyCircle()
 {
-//Spawns enemies and sets their color and positions 
-//	   Sets a random position
-// 	   Sets a random color
-// 	   Adds enemy to the vector
-//	   Moves the enemies
-//	   Removes the edge of the enemies from the screen
-
 	this->enemyCircle.setPosition(
 		static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->enemyCircle.getRadius())),
 		0.f
@@ -175,7 +154,6 @@ void Game::updateEnemyCircle()
 			break;
 	}
 
-	//Spawn, the enemies
 	this->enemiesCirc.push_back(this->enemyCircle);
 }
 
@@ -183,12 +161,10 @@ void Game::updateHpBar() { this->hpBar.setSize(sf::Vector2f(this->health, 20)); 
 
 void Game::updateEnemies()
 {
-	//Update the timer for enemy spawning
 	if (this->enemiesCirc.size() < this->maxEnemiesCirc)
 	{
 		if (this->enemySpawnTimerCirc >= this->enemySpawnTimerMaxCirc)
 		{
-			//Spawn the enemy and reset the timer
 			this->updateEnemyCircle();
 			this->enemySpawnTimerCirc = 10.f;
 		}
@@ -196,7 +172,6 @@ void Game::updateEnemies()
 			this->enemySpawnTimerCirc += 1.f;
 	}
 
-	//Move the enemies
 	for (int i = 0; i < this->enemiesCirc.size(); i++)
 	{
 		bool deleted = false;
@@ -219,7 +194,6 @@ void Game::updateEnemies()
 		}
 	}
 
-	//Check if clicked on
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
 		if (this->mouseHeld == false)
@@ -248,7 +222,6 @@ void Game::updateEnemies()
 					
 					this->enemiesCirc.erase(this->enemiesCirc.begin() + i);
 
-					//Sfx when u hit a target
 					this->audGame->playSFX();
 				}
 			}
@@ -259,10 +232,6 @@ void Game::updateEnemies()
 
 void Game::updateMousePos()
 {
-	/*
-		Updates the mouse positions :
-			Mouse position relative to window (Vector2i)
-	*/
 	this->mousePosWindow = sf::Mouse::getPosition(*this->window);
 	this->mousePosView = this->window->mapPixelToCoords(this->mousePosWindow);
 }
@@ -342,43 +311,11 @@ void Game::updateLevelStats()
 	}
 }
 
-void Game::updateRestart()
-{
-	std::stringstream restart;
-	restart << "Restart\n";
-	this->uiRestart.setString(restart.str());
-}
-
 void Game::updateScore()
 {
 	std::stringstream score;
 	score << "You final score is : " << this->points << "\n";
 	this->uiScore.setString(score.str());
-}
-
-void Game::updateQuit() 
-{ 
-	std::stringstream quit;
-	quit << "Quit\n";
-	this->uiQuit.setString(quit.str());
-}
-
-void Game::updateMenu()
-{
-	this->menuObj->menu[0].setFont(this->font);
-	this->menuObj->menu[0].setFillColor(sf::Color::Red);
-	this->menuObj->menu[0].setString("Restart");
-	this->menuObj->menu[0].setPosition(sf::Vector2f(300 / 2, 300 / (MAX_NUMBER_ITEMS + 1) * 1));
-
-	this->menuObj->menu[1].setFont(this->font);
-	this->menuObj->menu[1].setFillColor(sf::Color::Red);
-	this->menuObj->menu[1].setString("Help");
-	this->menuObj->menu[1].setPosition(sf::Vector2f(300 / 2, 300 / (MAX_NUMBER_ITEMS + 1) * 2));
-
-	this->menuObj->menu[2].setFont(this->font);
-	this->menuObj->menu[2].setFillColor(sf::Color::Red);
-	this->menuObj->menu[2].setString("Quit");
-	this->menuObj->menu[2].setPosition(sf::Vector2f(300 / 2, 300 / (MAX_NUMBER_ITEMS + 1) * 3));
 }
 
 void Game::updateSpawn()
@@ -395,8 +332,7 @@ void Game::updateSpawn()
 void Game::update()
 {
 	this->pollEvents();
-
-	if(!this->pauseGame && !this->endGame)
+	if (!this->pauseGame && !this->endGame)
 	{
 		this->updateMousePos();
 		this->updateEnemies();
@@ -407,24 +343,14 @@ void Game::update()
 		this->updateLevelStats();
 	}
 
-	if (this->pauseGame)
-	{
-		audGame->stopBGM();
-		//this->updateRestart();
-		//this->updateScore();
-		//this->updateQuit();
-		this->updateMenu();
-	}
-	
-	if (this->hpBar.getSize().x <= 0) { this->pauseGame = true; this->hpBar.setSize(sf::Vector2f(0.f,200.f)); }
+	if (this->pauseGame) { this->audGame->stopBGM(); this->updateScore(); }
+
+	if (this->hpBar.getSize().x <= 0) { this->pauseGame = true; this->hpBar.setSize(sf::Vector2f(0.f, 200.f)); }
 }
-
-
 
 /// 
 /// Render functions that will be used to render the game
 /// 
-
 
 
 void Game::renderPointStats(sf::RenderTarget& target)   { target.draw(this->uiPointStats); }
@@ -433,36 +359,21 @@ void Game::renderFpsStats(sf::RenderTarget& target)     { target.draw(this->uiFp
 
 void Game::renderLevelStats(sf::RenderTarget& target)   { target.draw(this->uiLevelStats); }
 
-void Game::renderQuit(sf::RenderTarget& target)			{ target.draw(this->uiQuit); }
-
-void Game::renderRestart(sf::RenderTarget& target)      { target.draw(this->uiRestart); }
-
 void Game::renderScore(sf::RenderTarget& target)        { target.draw(this->uiScore); }
 
 void Game::renderHpBar(sf::RenderTarget& target)		{ target.draw(this->hpBorder); target.draw(this->hpBar); }
 
 void Game::renderEnemeiesCirc(sf::RenderTarget& target) { for (auto& e : this->enemiesCirc) { target.draw(e); } }
 
-void Game::renderMenu(sf::RenderTarget& target) { for (int i = 0; i < MAX_NUMBER_ITEMS; i++) { target.draw(this->menuObj->menu[i]); } }
-
 void Game::render()
 {
-	/*
-	  Renders the game object by : 
-		Clearing the old frame
-		Rendering objects
-		Displaying them
-	*/
 	this->window->clear(sf::Color(115, 147, 161, 255));
 	this->renderEnemeiesCirc(*this->window);
 	this->renderHpBar(*this->window);
 	this->renderFpsStats(*this->window);
 	this->renderPointStats(*this->window);
 	this->renderLevelStats(*this->window);
-	this->renderRestart(*this->window);
 	this->renderScore(*this->window);
-	this->renderQuit(*this->window);
-	this->renderMenu(*this->window);
 	this->window->display();
 }
 
@@ -470,17 +381,12 @@ void Game::render()
 /// Game States, poll events, constructor and destructor
 /// 
 
-//Accessors   
 const bool Game::running() const { return this->window->isOpen(); }
 
 const bool Game::getEndGame() const { return this->endGame; }
 
-const bool Game::getPauseGame() const { return this->pauseGame; }
-
-//Public functions
 void Game::pollEvents()
 {
-	//Event polling
 	while (this->window->pollEvent(this->ev))
 	{
 		switch (this->ev.type)
@@ -501,7 +407,6 @@ Game::Game()
 	this->initializeVariables();
 	this->initWindow();
 	this->initFont();
-	this->initQuit();
 	this->initRestart();
 	this->initScore();
 	this->initPointStats();

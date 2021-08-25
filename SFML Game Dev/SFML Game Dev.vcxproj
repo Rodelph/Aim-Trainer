@@ -158,14 +158,12 @@
     <ClCompile Include="AudioGame.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="IOFile.cpp" />
-    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="SFML Game Dev.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioGame.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="IOFile.h" />
-    <ClInclude Include="Menu.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

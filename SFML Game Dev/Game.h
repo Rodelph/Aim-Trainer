@@ -4,9 +4,9 @@
 #include <ctime>
 #include <sstream>
 #include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 #include "AudioGame.h"
 #include "IOFile.h"
-#include "Menu.h"
 
 class Game
 {
@@ -27,15 +27,11 @@ class Game
 		//IO object
 		IOFile* ioFile = new IOFile();
 
-		//Menu Obj
-		Menu *menuObj;
-
 		//Text
 		sf::Text uiPointStats;
 		sf::Text uiLevelStats;
 		sf::Text uiFpsStats;
 		sf::Text uiRestart;
-		sf::Text uiQuit;
 		sf::Text uiScore;
 
 		//AduioGame object
@@ -62,7 +58,6 @@ class Game
 		void initializeVariables();
 		void initWindow();
 		void initAudio();
-		void initMenu();
 		void initEnemiesCirc();
 		void initFont();
 		void initPointStats();
@@ -71,7 +66,6 @@ class Game
 		void initHpBar();
 		void initRestart();
 		void initScore();
-		void initQuit();
 
 	public :
 		//Constructor / Destructor
@@ -81,7 +75,6 @@ class Game
 		//Accessors
 		const bool running() const;
 		const bool getEndGame() const;
-		const bool getPauseGame() const;
 		void pollEvents();
 
 		//Functions
@@ -94,19 +87,13 @@ class Game
 		void updateFpsStats();
 		void updateLevelStats();
 		void updateSpawn();
-		void updateRestart();
 		void updateScore();
-		void updateQuit();
-		void updateMenu();
 
 		void render();
-		void renderQuit(sf::RenderTarget& target);
-		void renderRestart(sf::RenderTarget& target);
 		void renderScore(sf::RenderTarget& target);
 		void renderHpBar(sf::RenderTarget& target);
 		void renderEnemeiesCirc(sf::RenderTarget& target);
 		void renderLevelStats(sf::RenderTarget& target);
 		void renderPointStats(sf::RenderTarget& target);
 		void renderFpsStats(sf::RenderTarget& target);
-		void renderMenu(sf::RenderTarget& target);
 };
