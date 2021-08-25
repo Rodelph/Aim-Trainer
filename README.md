@@ -18,5 +18,6 @@ You can download the latest zip "Visual C++ 15 (2017) - 64-bit" and in the direc
 
 And add them to x64/Release file next to the .exe file of the project.
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"
+
+
 Enjoy !! 
