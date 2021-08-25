@@ -8,7 +8,8 @@ As for when u hit a circle you gain points you get some hp back based on the rad
 """""""""""""""""""""""""""""""""""""""""""""""" Before Compiling """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 Please download the dlls of the SFML api that you can find by clicking on this link : 
-https://www.sfml-dev.org/download/sfml/2.5.1/
+https://www.sfml-dev.org/download/sfml/2.5.1/ .
+
 You can download the latest zip "Visual C++ 15 (2017) - 64-bit" and in the directory "SFML-2.5.1/bin" of you file please add the following dlls : 
   - openal32.dll
   - sfml-audio-2.dll
