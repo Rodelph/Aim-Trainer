@@ -16,7 +16,7 @@ You can download the latest zip "Visual C++ 15 (2017) - 64-bit" and in the direc
   - sfml-system-2.dll
   - sfml-window-2.dll
 
-And add them to x64/Release file next to the .exe file of the project.
+Please build your project, and then put the dll files in the x64/Release directory next to the .exe file of the project.
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
