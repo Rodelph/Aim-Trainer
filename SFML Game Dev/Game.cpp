@@ -23,6 +23,7 @@ void Game::initWindow()
 {
 	this->videoMode.height = 600;
 	this->videoMode.width = 800;
+
 	this->window = new sf::RenderWindow(this->videoMode, this->ioFile->getTitle(), sf::Style::Titlebar | sf::Style::Close);
 	this->window->setVerticalSyncEnabled(false);
 	this->window->setFramerateLimit(61);
@@ -39,8 +40,14 @@ void Game::initEnemiesCirc()
 
 void Game::initFont()
 {
-	if (!this->font.loadFromFile(this->ioFile->getFontDir())) { std::cout << this->ioFile->getFontError() << std::endl; }
-	else { this->font.loadFromFile(this->ioFile->getFontDir());}
+	if (!this->font.loadFromFile(this->ioFile->getFontDir())) 
+	{ 
+		std::cout << this->ioFile->getFontError() << std::endl; 
+	}
+	else 
+	{ 
+		this->font.loadFromFile(this->ioFile->getFontDir());
+	}
 }
 
 void Game::initPointStats()
@@ -109,6 +116,7 @@ void Game::updateEnemyCircle()
 	);
 
 	int type = rand() % 5;
+
 	switch (type)
 	{
 		case 0:
@@ -176,10 +184,11 @@ void Game::updateEnemies()
 	{
 		bool deleted = false;
 		this->enemiesCirc[i].move(0.f, 5.f);
+
 		if (this->enemiesCirc[i].getPosition().y > this->window->getSize().y)
 		{
 			this->enemiesCirc.erase(this->enemiesCirc.begin() + i);
-			//Hp loss
+
 			if (this->enemyCircle.getRadius() == 50.f) { this->health -= 5; }
 
 			if (this->enemyCircle.getRadius() == 40.f) { this->health -= 10; }
@@ -206,18 +215,33 @@ void Game::updateEnemies()
 				if (this->enemiesCirc[i].getGlobalBounds().contains(this->mousePosView))
 				{
 					//Deleting enemies and point system
-					if (this->enemyCircle.getRadius() == 50.f)      { this->points += 5; this->health += 2.f;     if (this->health >= 200.f) this->health = 200.f;}
-					
-					else if (this->enemyCircle.getRadius() == 40.f) { this->points += 10; this->health += 5.f;    if (this->health >= 200.f) this->health = 200.f;}
-					
-					else if (this->enemyCircle.getRadius() == 30.f) { this->health += 10; this->points += 20.f;   if (this->health >= 200.f) this->health = 200.f;}
-					
-					else if (this->enemyCircle.getRadius() == 20.f) { this->health += 20; this->points += 30.f;   if (this->health >= 200.f) this->health = 200.f;}
-					
-					else if (this->enemyCircle.getRadius() == 15.f) { this->health += 30; this->points += 50.f;   if (this->health >= 200.f) this->health = 200.f;}
-					
-					else if (this->enemyCircle.getRadius() == 10.f) { this->hpBar.setSize(sf::Vector2f(200, 20)); if (this->health >= 200.f) this->health = 200.f;  this->points += 100; }
+					if (this->enemyCircle.getRadius() == 50.f)      
+					{ 
+						this->points += 5; this->health += 2.f;     
+					}
+					else if (this->enemyCircle.getRadius() == 40.f) 
+					{ 
+						this->points += 10; this->health += 5.f;    
+					}
+					else if (this->enemyCircle.getRadius() == 30.f) 
+					{ 
+						this->health += 10; this->points += 20.f;   
+					}
+					else if (this->enemyCircle.getRadius() == 20.f) 
+					{ 
+						this->health += 20; this->points += 30.f;   
+					}
+					else if (this->enemyCircle.getRadius() == 15.f) 
+					{ 
+						this->health += 30; this->points += 50.f;   
+					}
+					else if (this->enemyCircle.getRadius() == 10.f) 
+					{ 
+						this->hpBar.setSize(sf::Vector2f(200, 20)); 
+					}
 					 
+					if (this->health >= 200.f) this->health = 200.f;  this->points += 100;
+
 					deleted = true;
 					
 					this->enemiesCirc.erase(this->enemiesCirc.begin() + i);
@@ -332,6 +356,7 @@ void Game::updateSpawn()
 void Game::update()
 {
 	this->pollEvents();
+
 	if (!this->pauseGame && !this->endGame)
 	{
 		this->updateMousePos();
@@ -417,4 +442,8 @@ Game::Game()
 	this->initEnemiesCirc();
 }
 
-Game::~Game() { delete this->window; this->audGame->~AudioGame(); }
+Game::~Game() 
+{ 
+	delete this->window; 
+	this->audGame->~AudioGame(); 
+}
