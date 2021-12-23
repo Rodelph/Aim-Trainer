@@ -5,17 +5,17 @@ class IOFile
 {
 	private:
 		//Title
-		const std::string& titleGame = "Hit me Up !";
+		const std::string titleGame = "Hit me Up !";
 
 		//Music fonts etc
-		const std::string& dosisFont = "src/Fonts/Dosis-Light.ttf";
-		const std::string& bgmFile = "src/Music/music.wav";
-		const std::string& sfxFile = "src/Music/hit.wav";
+		const std::string dosisFont = "./src/Fonts/Dosis-Light.ttf";
+		const std::string bgmFile = "./src/Music/music.wav";
+		const std::string sfxFile = "./src/Music/hit.wav";
 		
 		//Error handling
-		const std::string& gmErrorInitFont = "Info::GAME::InitFonts:: Font not loaded !";
-		const std::string& gmErrorInitSFX = "INFO::GAME::SFX::SFX files not loaded !!";
-		const std::string& gmErrorInitBGM = "INFO::GAME::Music:: Music files not loaded !!";
+		const std::string gmErrorInitFont = "Info::GAME::InitFonts:: Font not loaded !";
+		const std::string gmErrorInitSFX = "INFO::GAME::SFX::SFX files not loaded !!";
+		const std::string gmErrorInitBGM = "INFO::GAME::Music:: Music files not loaded !!";
 
 	public:
 		const std::string getFontDir() const;
